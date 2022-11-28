@@ -6,8 +6,8 @@
 
 # Python FreeJay
 
-Python FreeJay is free DJ software that supports basic DJ functionality and
-convenient audio download from YouTube.
+Python FreeJay is an open source DJ application that supports basic DJ
+functionality and convenient audio download from YouTube.
 
 Inspired by the 2000s party saver twoyoutubevideosandamotherfuckingcrossfader.com,
 FreeJay is a desktop application built on open source tools, and aims to
