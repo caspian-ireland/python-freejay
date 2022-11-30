@@ -103,7 +103,7 @@ class DJPlayer:
                 None (Default). If none, MPV log events are not handled.
         """
 
-        self.filename = None
+        self.filename = ""
         self.__speed = 1.0
         self.__playing = False
         self.__cue_mode = True
@@ -146,7 +146,7 @@ class DJPlayer:
                 self.filename = filename
                 self.__time_cue = self.__player.time_start
             else:
-                self.filename = None
+                self.filename = ""
                 self.__time_cue = 0.0
                 logger.error("File %s could not be loaded.", filename)
                 raise MPVLoadError(filename)
