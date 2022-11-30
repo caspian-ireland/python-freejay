@@ -1,5 +1,6 @@
 [![GitHub release](https://img.shields.io/github/release/caspian-ireland/python-freejay?include_prereleases=&sort=semver&color=blue)](https://github.com/caspian-ireland/python-freejay/releases/)
 [![issues - python-freejay](https://img.shields.io/github/issues/caspian-ireland/python-freejay)](https://github.com/caspian-ireland/python-freejay/issues)
+[![test](https://github.com/caspian-ireland/python-freejay/actions/workflows/test.yml/badge.svg)](https://github.com/caspian-ireland/python-freejay/actions/workflows/test.yml)
 [![License](https://img.shields.io/badge/License-GPLv3-blue)](#license)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
