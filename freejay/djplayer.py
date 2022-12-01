@@ -82,6 +82,7 @@ class DJPlayer:
     Attributes:
         speed (float): The playback speed.
         filename (str): Audio file loaded in player.
+        __filename(str): Audio file loaded in player.
         __speed(float): Playback speed.
         __playing(bool): Is audio currently playing?
         __cue_mode (bool): Is the player in cue mode?
@@ -109,8 +110,7 @@ class DJPlayer:
             log_handler(Callable | None, optional): A function to handle log events or
                 None (Default). If none, MPV log events are not handled.
         """
-
-        self.filename = ""
+        self.__filename = ""
         self.__speed = 1.0
         self.__playing = False
         self.__cue_mode = True
@@ -148,10 +148,10 @@ class DJPlayer:
             # See issue https://github.com/jaseg/python-mpv/issues/194
             if self.__player.path:
                 logger.info("File %s loaded.", filename)
-                self.filename = filename
+                self.__filename = filename
                 self.__time_cue = self.__player.time_start
             else:
-                self.filename = ""
+                self.__filename = ""
                 self.__time_cue = 0.0
                 logger.error("File %s could not be loaded.", filename)
                 raise MPVLoadError(filename)
@@ -221,6 +221,10 @@ class DJPlayer:
         self.__player.speed = val
         self.__speed = val
 
+    @property
+    def filename(self) -> str:
+        """Filename."""
+        return self.__filename
 
     def nudge_press(self, amount: float = 0.15):
         """
