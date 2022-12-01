@@ -10,6 +10,7 @@ import logging
 import functools
 import time
 import typing
+import abc
 from mpv import MPV
 
 TCallable = typing.TypeVar("TCallable", bound=typing.Callable)
@@ -76,7 +77,102 @@ def mpv_log_handler(loglevel: str, component: str, message: str) -> None:
     )
 
 
-class DJPlayer:
+class DJPlayer(abc.ABC):
+    """DJ media player interface."""
+
+    @abc.abstractmethod
+    def __init__(
+        self, log_handler: typing.Callable[[str, str, str], None] | None = None
+    ):
+        """Construct DJPlayer.
+
+        Args:
+            log_handler (typing.Callable[[str, str, str], None] | None, optional):
+                Log handler to pass to media player. Defaults to None.
+        """
+        pass
+
+    @property
+    @abc.abstractmethod
+    def speed(self) -> float:
+        """Playback speed."""
+        pass
+
+    @speed.setter
+    @abc.abstractmethod
+    def speed(self, val: float):
+        pass
+
+    @property
+    @abc.abstractmethod
+    def filename(self) -> str:
+        """Filename for loaded track."""
+        pass
+
+    @abc.abstractmethod
+    def load(self, filename: str):
+        """Load a track.
+
+        Args:
+            filename (str): filename to load into player.
+        """
+        pass
+
+    @abc.abstractmethod
+    def play_pause(self):
+        """Play or pause the track."""
+        pass
+
+    @abc.abstractmethod
+    def stop(self):
+        """Stop playback and return to start of track."""
+        pass
+
+    @abc.abstractmethod
+    def cue_press(self):
+        """Imitates cue button press (see method `cue_release` for release)."""
+        pass
+
+    @abc.abstractmethod
+    def cue_release(self):
+        """Imitates cue button release (see method `cue_press` for press)."""
+        pass
+
+    @abc.abstractmethod
+    def nudge_press(self):
+        """
+        Pitch nudge start.
+
+        Nudge the track by temporarily changing the speed. Represents
+        the start of the nudge, see also `nudge_release`.
+
+        Args:
+            amount(float): Nudge amount. Positive numbers represent speed
+                increase and negative numbers represent speed decrease. E.g
+                amount = -0.15 would decrease speed by 15%.
+
+        Raises:
+            ValueError if amount outside the range (-1, 1)
+        """
+        pass
+
+    @abc.abstractmethod
+    def nudge_release(self):
+        """Pitch nudge stop. See also `nudge_press`."""
+        pass
+
+    @abc.abstractmethod
+    def jog(self):
+        """Jog the track.
+
+        Args:
+            amount(float): Number of seconds to jog. Positive numbers
+                represent forward, negative numbers represent backwards.
+        """
+        pass
+
+
+class DJPlayerMpv(DJPlayer):
     """DJ Media player powered by MPV.
 
     Attributes:
