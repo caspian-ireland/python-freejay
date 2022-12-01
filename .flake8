@@ -1,7 +1,6 @@
 [flake8]
-extend-ignore = E203
+extend-ignore = E203,D200
 exclude = .git,__pycache__,.venv
 max-complexity = 10
 max-line-length = 88
-per-file-ignores =
-    tests/*:F841
+per-file-ignores = tests/*:F841
