@@ -217,9 +217,10 @@ class DJPlayer:
         return self.__speed
 
     @speed.setter  # When you set the speed, update it in the player too.
-    def speed(self, speed: float):
-        self.__player.speed = speed
-        self.__speed = speed
+    def speed(self, val: float):
+        self.__player.speed = val
+        self.__speed = val
+
 
     def nudge_press(self, amount: float = 0.15):
         """
