@@ -81,14 +81,12 @@ class DJPlayer(abc.ABC):
     """DJ media player interface."""
 
     @abc.abstractmethod
-    def __init__(
-        self, log_handler: typing.Callable[[str, str, str], None] | None = None
-    ):
+    def __init__(self, player: MPV):
         """Construct DJPlayer.
 
         Args:
-            log_handler (typing.Callable[[str, str, str], None] | None, optional):
-                Log handler to pass to media player. Defaults to None.
+            player(MPV): MPV media player.
+
         """
         pass
 
@@ -196,22 +194,19 @@ class DJPlayerMpv(DJPlayer):
         jog(amount): Jog (relative seek) the track by amount.
     """
 
-    def __init__(
-        self, log_handler: typing.Callable[[str, str, str], None] | None = None
-    ):
+    def __init__(self, player: MPV):
         """
         Construct DJPlayerMpv.
 
         Args:
-            log_handler(Callable | None, optional): A function to handle log events or
-                None (Default). If none, MPV log events are not handled.
+            player(MPV): MPV media player.
         """
         self.__filename = ""
         self.__speed = 1.0
         self.__playing = False
         self.__cue_mode = True
         self.__time_cue = 0.0
-        self.__player = MPV(log_handler=log_handler)
+        self.__player = player
 
     def load(self, filename: str):
         """Load an audio file into the player.
