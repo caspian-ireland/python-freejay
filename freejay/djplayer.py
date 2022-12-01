@@ -18,17 +18,23 @@ logger = logging.getLogger(__name__)
 
 class MPVLoadError(Exception):
     """
-    Exception raised for MPV load error.
-    Likely due to incompatible file format.
+    Exception raised for MPV load error. Likely due to incompatible file format.
     """
 
-    def __init__(self, filename, message="MPV Could not load file."):
+    def __init__(self, filename: str, message: str = "MPV Could not load file."):
+        """Construct MPVLoadError.
+
+        Args:
+            filename (str): The file that caused a load error
+            message (str, optional): Exception message.
+                Defaults to 'MPV Could not load file.'.
+        """
         self.filename = filename
         super().__init__(message)
 
 
 def _check_file_loaded(func: TCallable) -> TCallable:
-    """Decorator to check file is loaded before running DJPlayer methods.
+    """Check file is loaded before running DJPlayer methods.
 
     Args:
         func (TCallable): DJPlayer method
@@ -49,7 +55,7 @@ def _check_file_loaded(func: TCallable) -> TCallable:
 
 
 def mpv_log_handler(loglevel: str, component: str, message: str) -> None:
-    """Convert mpv log events into log events
+    """Convert mpv log events into log events.
 
     Args:
         loglevel (str): Log level. Currently supported levels are: 'trace', 'debug',
@@ -96,8 +102,9 @@ class DJPlayer:
     def __init__(
         self, log_handler: typing.Callable[[str, str, str], None] | None = None
     ):
-
         """
+        Construct DJPlayerMpv.
+
         Args:
             log_handler(Callable | None, optional): A function to handle log events or
                 None (Default). If none, MPV log events are not handled.
@@ -111,8 +118,7 @@ class DJPlayer:
         self.__player = MPV(log_handler=log_handler)
 
     def load(self, filename: str):
-
-        """Load an audio file into the player
+        """Load an audio file into the player.
 
         Args:
             filename(str): path to audio file
@@ -122,7 +128,6 @@ class DJPlayer:
             MPVLoadError: If the file `filename` cannot be loaded by MPV
                 media player. Likely due to incompatible file format.
         """
-
         # If the file is playing, do nothing and log a warning.
         if self.__playing:
             logger.warning("Track is still playing!")
@@ -181,7 +186,7 @@ class DJPlayer:
 
     @_check_file_loaded
     def cue_press(self):
-        """Imitates cue button press (see method `cue_release` for release)"""
+        """Imitates cue button press (see method `cue_release` for release)."""
         # Cue behaviour uses the `__cue_mode` attribute to track whether the
         # player is in cue mode. Cue mode is activated when the user calls the
         # `cue_press` or `stop` methods, and is deactivated when the user calls the
@@ -201,14 +206,14 @@ class DJPlayer:
 
     @_check_file_loaded
     def cue_release(self):
-        """Imitates cue button release (see method `cue_press` for press)"""
+        """Imitates cue button release (see method `cue_press` for press)."""
         if self.__cue_mode:
             self.__pause()
             self.__player.seek(amount=self.__time_cue, reference="absolute")
 
     @property
     def speed(self) -> float:
-        """Playback speed"""
+        """Playback speed."""
         return self.__speed
 
     @speed.setter  # When you set the speed, update it in the player too.
@@ -218,7 +223,8 @@ class DJPlayer:
 
     def nudge_press(self, amount: float = 0.15):
         """
-        Pitch nudge start
+        Pitch nudge start.
+
         Nudge the track by temporarily changing the speed. Represents
         the start of the nudge, see also `nudge_release`.
 
@@ -235,11 +241,11 @@ class DJPlayer:
         self.__player.speed = self.__player.speed * (1 + amount)  # type: ignore
 
     def nudge_release(self):
-        """Pitch nudge stop. See also `nudge_press`"""
+        """Pitch nudge stop. See also `nudge_press`."""
         self.__player.speed = self.speed
 
     def jog(self, amount: float = 10.0):
-        """Jog the track
+        """Jog the track.
 
         Args:
             amount(float): Number of seconds to jog. Positive numbers
