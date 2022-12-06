@@ -1,6 +1,6 @@
-"""Contains Audio Player Functionality.
+"""Contains DJ Audio Player Functionality.
 
-The DJPlayer module holds the DJPlayer class, representing a DJ
+The DJPlayer module holds the DJPlayer interface and implementations, representing a DJ
 audio player.
 """
 
@@ -17,64 +17,7 @@ TCallable = typing.TypeVar("TCallable", bound=typing.Callable)
 logger = logging.getLogger(__name__)
 
 
-class MPVLoadError(Exception):
-    """
-    Exception raised for MPV load error. Likely due to incompatible file format.
-    """
-
-    def __init__(self, filename: str, message: str = "MPV Could not load file."):
-        """Construct MPVLoadError.
-
-        Args:
-            filename (str): The file that caused a load error
-            message (str, optional): Exception message.
-                Defaults to 'MPV Could not load file.'.
-        """
-        self.filename = filename
-        super().__init__(message)
-
-
-def _check_file_loaded(func: TCallable) -> TCallable:
-    """Check file is loaded before running DJPlayer methods.
-
-    Args:
-        func (TCallable): DJPlayer method
-
-    Returns:
-        TCallable: DJPlayer method wrapped with conditional statement.
-    """
-
-    @functools.wraps(func)
-    def wrapper_check_file_loaded(self, *args, **kwargs):
-        if self.filename:
-            return func(self, *args, **kwargs)
-
-        logger.info("File not loaded.")
-        return None
-
-    return typing.cast(TCallable, wrapper_check_file_loaded)
-
-
-def mpv_log_handler(loglevel: str, component: str, message: str) -> None:
-    """Convert mpv log events into log events.
-
-    Args:
-        loglevel (str): Log level. Currently supported levels are: 'trace', 'debug',
-            'warn', 'error', 'fatal'. All others will be raised as `logging.ERROR`.
-        component (str): mpv component raising log event
-        message (str): Log message
-    """
-    mpv_log_levels = {
-        "fatal": logging.FATAL,
-        "error": logging.ERROR,
-        "warn": logging.WARN,
-        "info": logging.INFO,
-        "debug": logging.DEBUG,
-        "trace": logging.DEBUG,
-    }
-    logger.log(
-        mpv_log_levels.get(loglevel, logging.ERROR), "MPV-%s: %s", component, message
-    )
+"""DJPlayer Interface"""
 
 
 class DJPlayer(abc.ABC):
@@ -168,6 +111,69 @@ class DJPlayer(abc.ABC):
                 represent forward, negative numbers represent backwards.
         """
         pass
+
+
+"""MPV Implementation"""
+
+
+class MPVLoadError(Exception):
+    """
+    Exception raised for MPV load error. Likely due to incompatible file format.
+    """
+
+    def __init__(self, filename: str, message: str = "MPV Could not load file."):
+        """Construct MPVLoadError.
+
+        Args:
+            filename (str): The file that caused a load error
+            message (str, optional): Exception message.
+                Defaults to 'MPV Could not load file.'.
+        """
+        self.filename = filename
+        super().__init__(message)
+
+
+def _check_file_loaded(func: TCallable) -> TCallable:
+    """Check file is loaded before running DJPlayer methods.
+
+    Args:
+        func (TCallable): DJPlayer method
+
+    Returns:
+        TCallable: DJPlayer method wrapped with conditional statement.
+    """
+
+    @functools.wraps(func)
+    def wrapper_check_file_loaded(self, *args, **kwargs):
+        if self.filename:
+            return func(self, *args, **kwargs)
+
+        logger.info("File not loaded.")
+        return None
+
+    return typing.cast(TCallable, wrapper_check_file_loaded)
+
+
+def mpv_log_handler(loglevel: str, component: str, message: str) -> None:
+    """Convert mpv log events into log events.
+
+    Args:
+        loglevel (str): Log level. Currently supported levels are: 'trace', 'debug',
+            'warn', 'error', 'fatal'. All others will be raised as `logging.ERROR`.
+        component (str): mpv component raising log event
+        message (str): Log message
+    """
+    mpv_log_levels = {
+        "fatal": logging.FATAL,
+        "error": logging.ERROR,
+        "warn": logging.WARN,
+        "info": logging.INFO,
+        "debug": logging.DEBUG,
+        "trace": logging.DEBUG,
+    }
+    logger.log(
+        mpv_log_levels.get(loglevel, logging.ERROR), "MPV-%s: %s", component, message
+    )
 
 
 class DJPlayerMpv(DJPlayer):
