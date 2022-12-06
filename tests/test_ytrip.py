@@ -7,9 +7,9 @@ def test_yt_rip_calls(mocker):
     """Test yt_rip() makes expected pytest method calls."""
     video_link = "https://www.youtube.com/watch?v=myfavetrack"
     destination = "some_destination"
-    m_YouTube_c = mocker.patch("freejay.ytrip.YouTube", autospec=True)
+    m_youtube_c = mocker.patch("freejay.ytrip.YouTube", autospec=True)
     freejay.ytrip.yt_rip(video_link, destination=destination)
-    m_YouTube_c.assert_has_calls(
+    m_youtube_c.assert_has_calls(
         [
             mock.call(video_link),
             mock.call().streams.get_audio_only(),

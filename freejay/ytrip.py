@@ -1,5 +1,5 @@
 """
-Rip audio files from youtube
+Rip audio files from youtube.
 """
 
 import os
@@ -36,7 +36,7 @@ def _check_video_available(filepath: str, video_link: str):
 
 
 def yt_rip(video_link: str, destination: str | None = None) -> str:
-    """Rip audio from YouTube
+    """Rip audio from YouTube.
 
     Args:
         video_link (str): YouTube URL
@@ -46,7 +46,6 @@ def yt_rip(video_link: str, destination: str | None = None) -> str:
     Returns:
         str: Filepath to downloaded audio file.
     """
-
     if not destination:
         destination = gettempdir()
     try:
