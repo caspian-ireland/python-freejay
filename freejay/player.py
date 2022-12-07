@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 """Player Interface"""
 
 
-class Player(abc.ABC):
+class IPlayer(abc.ABC):
     """Audio player interface."""
 
     @abc.abstractmethod
@@ -184,7 +184,7 @@ def mpv_log_handler(loglevel: str, component: str, message: str) -> None:
     )
 
 
-class PlayerMpv(Player):
+class PlayerMpv(IPlayer):
     """DJ Media player powered by MPV.
 
     Attributes:

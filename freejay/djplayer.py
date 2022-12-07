@@ -4,7 +4,7 @@ The DJPlayer module holds the DJPlayer class, representing a DJ audio player.
 """
 
 import logging
-from freejay.player import Player
+from freejay.player import IPlayer
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +19,7 @@ class DJPlayer:
         __speed(float): Playback speed.
         __cue_mode (bool): Is the player in cue mode?
         __time_cue (float): The cue point.
-        __player(Player): Audio player.
+        __player(IPlayer): Audio player.
 
     Methods:
         load(filename): Load a file into the deck
@@ -32,12 +32,12 @@ class DJPlayer:
         jog(amount): Jog (relative seek) the track by amount.
     """
 
-    def __init__(self, player: Player):
+    def __init__(self, player: IPlayer):
         """
         Construct DJPlayerMpv.
 
         Args:
-            player(Player): Media player.
+            player(IPlayer): Media player.
         """
         self.__filename = ""
         self.__speed = 1.0
