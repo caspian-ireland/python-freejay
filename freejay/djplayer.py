@@ -1,114 +1,16 @@
 """Contains DJ Audio Player Functionality.
 
-The DJPlayer module holds the DJPlayer interface and implementations, representing a DJ
-audio player.
+The DJPlayer module holds the DJPlayer class, representing a DJ audio player.
 """
 
 import logging
-import abc
 from freejay.player import Player
 
 logger = logging.getLogger(__name__)
 
 
-"""DJPlayer Interface"""
-
-
-class DJPlayer(abc.ABC):
-    """DJ media player interface."""
-
-    @abc.abstractmethod
-    def __init__(self, player: Player):
-        """Construct DJPlayer.
-
-        Args:
-            player(Player): Audio player.
-
-        """
-        pass
-
-    @property
-    @abc.abstractmethod
-    def speed(self) -> float:
-        """Playback speed."""
-        pass
-
-    @speed.setter
-    @abc.abstractmethod
-    def speed(self, val: float):
-        pass
-
-    @property
-    @abc.abstractmethod
-    def filename(self) -> str:
-        """Filename for loaded track."""
-        pass
-
-    @abc.abstractmethod
-    def load(self, filename: str):
-        """Load a track.
-
-        Args:
-            filename (str): filename to load into player.
-        """
-        pass
-
-    @abc.abstractmethod
-    def play_pause(self):
-        """Play or pause the track."""
-        pass
-
-    @abc.abstractmethod
-    def stop(self):
-        """Stop playback and return to start of track."""
-        pass
-
-    @abc.abstractmethod
-    def cue_press(self):
-        """Imitates cue button press (see method `cue_release` for release)."""
-        pass
-
-    @abc.abstractmethod
-    def cue_release(self):
-        """Imitates cue button release (see method `cue_press` for press)."""
-        pass
-
-    @abc.abstractmethod
-    def nudge_press(self):
-        """
-        Pitch nudge start.
-
-        Nudge the track by temporarily changing the speed. Represents
-        the start of the nudge, see also `nudge_release`.
-
-        Args:
-            amount(float): Nudge amount. Positive numbers represent speed
-                increase and negative numbers represent speed decrease. E.g
-                amount = -0.15 would decrease speed by 15%.
-
-        Raises:
-            ValueError if amount outside the range (-1, 1)
-        """
-        pass
-
-    @abc.abstractmethod
-    def nudge_release(self):
-        """Pitch nudge stop. See also `nudge_press`."""
-        pass
-
-    @abc.abstractmethod
-    def jog(self):
-        """Jog the track.
-
-        Args:
-            amount(float): Number of seconds to jog. Positive numbers
-                represent forward, negative numbers represent backwards.
-        """
-        pass
-
-
-class DJPlayerBasic(DJPlayer):
-    """DJ Media player powered by MPV.
+class DJPlayer:
+    """DJ audio player.
 
     Attributes:
         speed (float): The playback speed.
@@ -117,7 +19,7 @@ class DJPlayerBasic(DJPlayer):
         __speed(float): Playback speed.
         __cue_mode (bool): Is the player in cue mode?
         __time_cue (float): The cue point.
-        __player(MPV): Media player.
+        __player(Player): Audio player.
 
     Methods:
         load(filename): Load a file into the deck
