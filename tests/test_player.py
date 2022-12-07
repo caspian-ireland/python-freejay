@@ -20,7 +20,7 @@ def check_file_loaded_f():
 
 @pytest.fixture
 def mpv_f(mocker):
-    mocker.patch("mpv.MPV", autospec=True)
+    mocker.patch("mpv.MPV")
     player = mpv.MPV()
     player.path = "some_path"
     return player
