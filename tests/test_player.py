@@ -111,3 +111,11 @@ def test_set_speed(mpv_f):
     assert playermpv.speed == 1.2
     playermpv.speed = 0.9
     assert mpv_f.speed == 0.9
+
+
+def test_set_volume(mpv_f):
+    playermpv = freejay.player.PlayerMpv(mpv_f)
+    mpv_f.volume = 100
+    assert playermpv.volume == 100
+    playermpv.volume = 50
+    assert mpv_f.volume == 50
