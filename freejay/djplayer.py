@@ -17,6 +17,7 @@ class DJPlayer:
         filename (str): Audio file loaded in player.
         time_pos (float): Current time in track.
         time_cue (float): Cue point time in track.
+        volume(float): The audio volume.
         __filename(str): Audio file loaded in player.
         __speed(float): Playback speed.
         __cue_mode (bool): Is the player in cue mode?
@@ -123,6 +124,15 @@ class DJPlayer:
     def speed(self, val: float):
         self.__speed = val
         self.__nudge(self.__nudge_amount)
+
+    @property
+    def volume(self) -> float:
+        """Playback volume."""
+        return self.__player.volume
+
+    @volume.setter
+    def volume(self, val: float):
+        self.__player.volume = val
 
     @property
     def filename(self) -> str:

@@ -46,6 +46,17 @@ class IPlayer(abc.ABC):
 
     @property
     @abc.abstractmethod
+    def volume(self) -> float:
+        """Audio volume."""
+        pass
+
+    @volume.setter
+    @abc.abstractmethod
+    def volume(self, val: float):
+        pass
+
+    @property
+    @abc.abstractmethod
     def time_start(self) -> float:
         """Start time of track."""
         pass
@@ -282,6 +293,15 @@ class PlayerMpv(IPlayer):
     @speed.setter  # When you set the speed, update it in the player too.
     def speed(self, val: float):
         self.__player.speed = val
+
+    @property
+    def volume(self) -> float:
+        """Track volume."""
+        return self.__player.volume
+
+    @volume.setter  # When you set the volume, update it in the player too.
+    def volume(self, val: float):
+        self.__player.volume = val
 
     @property
     @_check_file_loaded

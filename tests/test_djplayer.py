@@ -182,3 +182,10 @@ def test_jog_does_relative_seek(loaded_player_f):
     player, djplayer = loaded_player_f
     djplayer.jog(20)
     player.seek.assert_called_once_with(amount=20, reference="relative")
+
+
+def test_volume_updates_player_volume(loaded_player_f):
+    player, djplayer = loaded_player_f
+    player.volume = 100
+    djplayer.volume = 50
+    assert player.volume == 50
