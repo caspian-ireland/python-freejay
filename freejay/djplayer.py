@@ -15,10 +15,13 @@ class DJPlayer:
     Attributes:
         speed (float): The playback speed.
         filename (str): Audio file loaded in player.
+        time_pos (float): Current time in track.
+        time_cue (float): Cue point time in track.
         __filename(str): Audio file loaded in player.
         __speed(float): Playback speed.
         __cue_mode (bool): Is the player in cue mode?
         __time_cue (float): The cue point.
+        __nudge_amount(float): Current pitch nudge amount.
         __player(IPlayer): Audio player.
 
     Methods:
@@ -30,6 +33,7 @@ class DJPlayer:
         nudge_press(amount): Represents pitch nudge press.
         nudge_release(): Represents pitch nudge release.
         jog(amount): Jog (relative seek) the track by amount.
+        __nudge(amount): Helper to apply pitch nudge.
     """
 
     def __init__(self, player: IPlayer):
@@ -43,6 +47,7 @@ class DJPlayer:
         self.__speed = 1.0
         self.__cue_mode = True
         self.__time_cue = 0.0
+        self.__nudge_amount = 0.0
         self.__player = player
 
     def load(self, filename: str):
@@ -63,6 +68,7 @@ class DJPlayer:
             self.__cue_mode = True
             self.__player.load(filename=filename)
             self.__filename = filename
+            self.speed = 1.0
             self.__time_cue = self.__player.time_start
 
     def play_pause(self):
@@ -104,7 +110,7 @@ class DJPlayer:
 
     def cue_release(self):
         """Imitates cue button release (see method `cue_press` for press)."""
-        if self.__cue_mode:
+        if self.__cue_mode and self.__player.playing:
             self.__player.pause()
             self.__player.seek(amount=self.__time_cue, reference="absolute")
 
@@ -115,13 +121,23 @@ class DJPlayer:
 
     @speed.setter  # When you set the speed, update it in the player too.
     def speed(self, val: float):
-        self.__player.speed = val
         self.__speed = val
+        self.__nudge(self.__nudge_amount)
 
     @property
     def filename(self) -> str:
         """Filename."""
         return self.__filename
+
+    @property
+    def time_pos(self) -> float:
+        """Time position."""
+        return self.__player.time_pos
+
+    @property
+    def time_cue(self) -> float:
+        """Cue point time."""
+        return self.__time_cue
 
     def nudge_press(self, amount: float = 0.15):
         """
@@ -140,11 +156,17 @@ class DJPlayer:
         """
         if not -1 < amount < 1:
             raise ValueError("Amount must be in the range (-1, 1).")
-        self.__player.speed = self.__player.speed * (1 + amount)
+        else:
+            self.__nudge(amount)
+            self.__nudge_amount = amount
 
     def nudge_release(self):
         """Pitch nudge stop. See also `nudge_press`."""
-        self.__player.speed = self.speed
+        self.__nudge(0)
+        self.__nudge_amount = 0.0
+
+    def __nudge(self, amount):
+        self.__player.speed = self.speed * (1 + amount)
 
     def jog(self, amount: float = 10.0):
         """Jog the track.

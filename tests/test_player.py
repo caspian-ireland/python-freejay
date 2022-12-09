@@ -26,15 +26,6 @@ def mpv_f(mocker):
     return player
 
 
-@pytest.fixture
-def mock_mp4(tmp_path):
-    d = tmp_path / "sub"
-    d.mkdir()
-    p = d / "test.mp4"
-    p.write_text("test")
-    return p
-
-
 def test_check_file_loaded_success(check_file_loaded_f):
     check_file_loaded_f.loaded = True
     assert check_file_loaded_f.test_method() is True
@@ -82,6 +73,13 @@ def test_load_fail(mpv_f, mock_mp4):
 
     with pytest.raises(freejay.player.LoadError) as e_info:
         playermpv.load(mock_mp4)
+
+
+def test_load_file_not_found(mpv_f):
+    mpv_f.path = "some_path_not_exists.mp4"
+    playermpv = freejay.player.PlayerMpv(mpv_f)
+    with pytest.raises(FileNotFoundError) as e_info:
+        playermpv.load("some_path_not_exists.mp4")
 
 
 def test_play_pause(mpv_f):
