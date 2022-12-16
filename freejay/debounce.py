@@ -105,5 +105,3 @@ class KeyBoardDebouncer:
     def released(self, event):
         """Key released callback."""
         self.debouncer[self.getkey(event)].released(event)
-
-
