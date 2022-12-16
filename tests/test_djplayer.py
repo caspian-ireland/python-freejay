@@ -106,7 +106,8 @@ def test_cue_returns_to_cuepoint_if_playing(loaded_player_f):
     player.playing = True
     djplayer.cue_press()
     djplayer.cue_release()
-    player.seek.assert_called_once_with(amount=20, reference="absolute")
+    player.seek.assert_called_with(amount=20, reference="absolute")
+    assert player.seek.call_count == 2
 
 
 def test_play_pause_during_cue_continues(loaded_player_f):

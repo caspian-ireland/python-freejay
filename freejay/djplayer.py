@@ -111,9 +111,10 @@ class DJPlayer:
 
     def cue_release(self):
         """Imitates cue button release (see method `cue_press` for press)."""
-        if self.__cue_mode and self.__player.playing:
-            self.__player.pause()
+        if self.__cue_mode:
             self.__player.seek(amount=self.__time_cue, reference="absolute")
+            if self.__player.playing:
+                self.__player.pause()
 
     @property
     def speed(self) -> float:
