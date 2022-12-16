@@ -110,6 +110,9 @@ class Message:
     metadata: dict = dataclasses.field(default_factory=dict)
 
     def __post_init__(self):
-        """Adds automatically populated data.
-        Adds message creation time to metadata under the key 'dt'."""
+        """
+        Add automatically populated data.
+
+        Adds message creation time to metadata under the key 'dt'.
+        """
         self.metadata["dt"] = time.time()
