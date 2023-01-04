@@ -24,4 +24,4 @@ class Consumer(typing.Protocol):
         pass
 
     def __call__(self, message: messages.Message):
-        self.on_message_recieved(message)
+        return self.on_message_recieved(message)
