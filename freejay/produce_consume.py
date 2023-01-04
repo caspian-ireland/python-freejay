@@ -60,4 +60,4 @@ class Consumer(typing.Protocol):
         Args:
             message (messages.Message): Message to process.
         """
-        self.on_message_recieved(message)
+        return self.on_message_recieved(message)
