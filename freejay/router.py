@@ -3,9 +3,6 @@ from freejay import messages
 from freejay import produce_consume as prodcon
 
 
-# Condition function
-# Listener
-
 RouteCondition = typing.TypeVar(
     "RouteCondition", bound=typing.Callable[[messages.Message], bool]
 )
@@ -19,10 +16,9 @@ class MessageRouter(prodcon.Consumer):
         self.routes.append({"condition": condition, "consumer": consumer})
 
     def on_message_recieved(self, message: messages.Message):
-        for condition, consumer in self.routes:
-            if condition(message):
-                consumer(message)
-                break
+        for route in self.routes:
+            if route["condition"](message):
+                return route["consumer"](message)
 
 
 def make_message_router(queue, debouncer):
