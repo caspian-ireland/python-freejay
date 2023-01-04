@@ -1,5 +1,12 @@
 """Messages to support communication between application components."""
 
+
+# TODO- Not sure about the message 'sender' class.
+# Should probably be replaced with a some sort of
+# 'recipient' class as its really identifying where
+# the message needs to end up (or at least the intended)
+# action.
+
 import typing
 import time
 import dataclasses
@@ -73,6 +80,7 @@ class Button(Content):
     """Button message content."""
 
     press_release: PressRelease
+    component: Component
     element: Element
 
 
@@ -87,6 +95,7 @@ class ValueButton(Button):
 class SetValue(Content):
     """SetValue message content."""
 
+    component: Component
     element: Element
     value: typing.Union[bool, int, float, str]
 
@@ -96,7 +105,6 @@ class Sender:
     """Sender data class."""
 
     source: Source
-    component: Component
     trigger: Trigger
 
 
