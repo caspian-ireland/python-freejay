@@ -1,4 +1,5 @@
 from freejay import messages as mes
+from freejay import produce_consume as prod_con
 
 keybindings = {
     "q": {
@@ -19,8 +20,11 @@ keybindings = {
     },
 }
 
+# KeyMapper listens to debouncer/router
+# KeyMapper sends messages to router/event handler
 
-class KeyMapper:
+
+class KeyMapper(prod_con.Consumer, prod_con.Producer):
     def __init__(self, keybindings):
         self.keybindings = keybindings
 
@@ -38,4 +42,7 @@ class KeyMapper:
             ),
         )
 
-        return newmessage
+        self.send_message(newmessage)
+
+    def on_message_recieved(self, message: mes.Message):
+        self.map(message)
