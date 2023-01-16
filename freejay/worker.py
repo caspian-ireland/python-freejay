@@ -1,17 +1,17 @@
 import queue
-from freejay import events
+from freejay import messages as mes
 
 
 # credit https://maldus512.medium.com/how-to-setup-correctly-an-application-with-python-and-tkinter-107c6bc5a45
 
 
-def workcycle(player, q):
-    event = None
+def worker(player, q):
+    message: mes.Message = None
     while True:
         try:
-            event = q.get(timeout=0.1)
+            message = q.get(timeout=0.1)
 
-            if event.payload.action == events.Action.PlayPause:
+            if message.content. == events.Action.PlayPause:
                 if event.payload.press_release == events.PressRelease.Press:
                     player.play_pause()
             if event.payload.action == events.Action.Cue:
@@ -22,3 +22,6 @@ def workcycle(player, q):
 
         except queue.Empty:
             pass
+
+
+
