@@ -1,13 +1,15 @@
 from freejay import messages as mes
-from freejay import produce_consume as prod_con
+from freejay import produce_consume as prodcon
 
 keybindings = {
     "q": {
         "name": "cue-left",
-        "content": mes.Button,
+        "content_type": mes.Button,
         "type": mes.Type.BUTTON,
-        "component": mes.Component.LEFT_DECK,
-        "element": mes.Element.CUE,
+        "content": {
+            "component": mes.Component.LEFT_DECK,
+            "element": mes.Element.CUE,
+        },
     },
     "w": {
         "name": "play_pause-left",
@@ -24,7 +26,7 @@ keybindings = {
 # KeyMapper sends messages to router/event handler
 
 
-class KeyMapper(prod_con.Consumer, prod_con.Producer):
+class KeyMapper(prodcon.Consumer, prodcon.Producer):
     def __init__(self, keybindings):
         self.keybindings = keybindings
 

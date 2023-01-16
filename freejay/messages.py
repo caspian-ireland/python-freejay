@@ -39,7 +39,7 @@ class Source(Enum):
     """Enum for message sources."""
 
     MAIN_WINDOW = 0
-    PLAYER = 0
+    PLAYER = 1
 
 
 class Trigger(Enum):
