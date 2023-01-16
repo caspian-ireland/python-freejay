@@ -39,7 +39,7 @@ jobs:
         limit-access-to-actor: true
     - name: Install system dependencies
       run: |
-        sudo apt-get install -y libmpv1
+        sudo apt-get update && sudo apt-get install -y libmpv1
     - name: Install python dependencies
       run: |
         python -m pip install --upgrade pip
