@@ -108,13 +108,16 @@ class Sender:
     trigger: Trigger
 
 
+T = typing.TypeVar("T", bound=Content)
+
+
 @dataclasses.dataclass
-class Message:
+class Message(typing.Generic[T]):
     """Message data class."""
 
     sender: Sender
-    content: Content
-    type: Type
+    content: T
+    type: typing.Optional[Type] = dataclasses.field(default=None)
     metadata: dict = dataclasses.field(default_factory=dict)
 
     def __post_init__(self):
@@ -124,3 +127,4 @@ class Message:
         Adds message creation time to metadata under the key 'dt'.
         """
         self.metadata["dt"] = time.time()
+        self.type = Type[type(self.content).__name__.upper()]
