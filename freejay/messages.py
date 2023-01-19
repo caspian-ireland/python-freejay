@@ -110,6 +110,13 @@ class Sender:
 
 T = typing.TypeVar("T", bound=Content)
 
+_type_mapping = {
+    "Key": Type.KEY,
+    "Button": Type.BUTTON,
+    "ValueButton": Type.VALUE_BUTTON,
+    "SetValue": Type.SET_VALUE,
+}
+
 
 @dataclasses.dataclass
 class Message(typing.Generic[T]):
@@ -127,4 +134,4 @@ class Message(typing.Generic[T]):
         Adds message creation time to metadata under the key 'dt'.
         """
         self.metadata["dt"] = time.time()
-        self.type = Type[type(self.content).__name__.upper()]
+        self.type = _type_mapping[type(self.content).__name__]
