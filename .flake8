@@ -3,4 +3,6 @@ extend-ignore = E203,D200
 exclude = .git,__pycache__,.venv
 max-complexity = 10
 max-line-length = 88
-per-file-ignores = tests/*:D100,D103,F841,D104,F841
+per-file-ignores =
+    tests/*:D100,D103,F841,D104,F841
+    __init__.py:F401
