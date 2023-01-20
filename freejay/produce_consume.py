@@ -5,8 +5,11 @@ Producers emit messages whilst Consumers recieve messages.
 
 from __future__ import annotations
 import typing
+import logging
 import abc
 from freejay import messages
+
+logger = logging.getLogger(__name__)
 
 
 class Producer(typing.Protocol):
@@ -28,7 +31,10 @@ class Producer(typing.Protocol):
         Args:
             message (messages.Message): Message to send
         """
-        self.consumer(message)
+        try:
+            self.consumer(message)
+        except AttributeError:
+            logger.warning(f"No consumer registered. Message dropped: {str(message)}")
 
 
 class Consumer(typing.Protocol):
