@@ -1,19 +1,35 @@
+"""
+Worker pulls messages from the queue and passes to the message handler.
+"""
+
 import queue
 import typing
-from freejay import handler
+import threading
 from freejay import messages as mes
 
 
-# credit https://maldus512.medium.com/how-to-setup-correctly-an-application-with-python-and-tkinter-107c6bc5a45
+class WorkCycle:
+    """Poll a queue for messages and pass them to a handler."""
 
+    def __init__(
+        self,
+        q: queue.Queue[typing.Type[mes.Message]],
+        handler: typing.Callable[[mes.Message], None],
+    ):
+        """Construct WorkCycle.
 
-class Worker:
-    def init(self, q: queue.Queue[typing.Type[mes.Message]], handler: handler.Handler):
+        Args:
+            q (queue.Queue[typing.Type[mes.Message]]): Message queue
+            handler (typing.Callable[[mes.Message], None]): Message handler
+        """
         self.q = q
         self.handler = handler
+        self.running = False
 
-    def process(self):
-        while True:
+    def start(self):
+        """Start the workcycle."""
+        self.running = True
+        while True and self.running:
             try:
                 message = self.q.get(timeout=0.1)
                 self.handler(message)
@@ -22,37 +38,24 @@ class Worker:
                 pass
 
 
-### Manual Testing ###
+class Worker:
+    """Run a workcycle on a daemon thread."""
 
+    def __init__(self, workcycle: WorkCycle):
+        """Construct Worker.
 
-# class ExampleClass:
-#     def __init__(self):
-#         self.a = "Something Cool"
+        Args:
+            workcycle (WorkCycle): Workcycle to run.
+        """
+        self.workcycle = workcycle
+        self.thread = None
 
-#     def somemethod(self):
-#         print(self.a)
+    # TODO - Do I need to worry about thread leakage here?
+    def start(self):
+        """Start the workcycle."""
+        self.thread = threading.Thread(target=self.workcycle.start, daemon=True)
+        self.thread.start()
 
-
-# msg = mes.Message(
-#     sender=mes.Sender(source=mes.Source.PLAYER, trigger=mes.Trigger.BUTTON_PRESS),
-#     content=mes.Button(
-#         press_release=mes.PressRelease.PRESS,
-#         component=mes.Component.LEFT_DECK,
-#         element=mes.Element.CUE,
-#     ),
-#     type=mes.Type.KEY,
-# )
-
-
-# myhandler = Handler()
-
-# exampleclass = ExampleClass()
-# button_cb = make_button_cb(exampleclass.somemethod)
-
-# myhandler.register_handler(
-#     callback=button_cb,
-#     component=mes.Component.LEFT_DECK,
-#     element=mes.Element.CUE,
-# )
-
-# myhandler(msg)
+    def stop(self):
+        """Stop the workcycle."""
+        self.workcycle.running = False
