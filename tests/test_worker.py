@@ -21,7 +21,7 @@ def handler_f():
 @pytest.fixture
 def msg():
     msg = mes.Message(
-        sender=mes.Sender(source=mes.Source.PLAYER, trigger=mes.Trigger.BUTTON_PRESS),
+        sender=mes.Sender(source=mes.Source.PLAYER, trigger=mes.Trigger.BUTTON),
         content=mes.Button(
             press_release=mes.PressRelease.PRESS,
             component=mes.Component.LEFT_DECK,

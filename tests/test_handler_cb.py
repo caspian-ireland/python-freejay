@@ -8,7 +8,7 @@ from freejay import messages as mes
 @pytest.fixture
 def message_f():
     msg = mes.Message(
-        sender=mes.Sender(source=mes.Source.PLAYER, trigger=mes.Trigger.KEY_PRESS),
+        sender=mes.Sender(source=mes.Source.PLAYER, trigger=mes.Trigger.KEY),
         content=mes.Key(press_release=mes.PressRelease.PRESS, sym="q"),
         type=mes.Type.KEY,
     )
@@ -36,7 +36,7 @@ def test_make_button_cb_cb_calls_correct():
     test_cb = handler_cb.make_button_cb(mocker1, mocker2)
 
     msg = mes.Message(
-        sender=mes.Sender(source=mes.Source.PLAYER, trigger=mes.Trigger.BUTTON_PRESS),
+        sender=mes.Sender(source=mes.Source.PLAYER, trigger=mes.Trigger.BUTTON),
         content=mes.Button(
             press_release=mes.PressRelease.PRESS,
             component=mes.Component.LEFT_DECK,
@@ -61,7 +61,7 @@ def test_make_button_cb_cb_no_release():
     test_cb = handler_cb.make_button_cb(mocker)
 
     msg = mes.Message(
-        sender=mes.Sender(source=mes.Source.PLAYER, trigger=mes.Trigger.BUTTON_PRESS),
+        sender=mes.Sender(source=mes.Source.PLAYER, trigger=mes.Trigger.BUTTON),
         content=mes.Button(
             press_release=mes.PressRelease.PRESS,
             component=mes.Component.LEFT_DECK,
@@ -85,7 +85,7 @@ def test_make_valuebutton_cb_cb_calls_correct():
     test_cb = handler_cb.make_value_button_cb(mocker1, mocker2)
 
     msg = mes.Message(
-        sender=mes.Sender(source=mes.Source.PLAYER, trigger=mes.Trigger.BUTTON_PRESS),
+        sender=mes.Sender(source=mes.Source.PLAYER, trigger=mes.Trigger.BUTTON),
         content=mes.ValueButton(
             press_release=mes.PressRelease.PRESS,
             component=mes.Component.LEFT_DECK,
@@ -111,7 +111,7 @@ def test_make_valuebutton_cb_cb_no_release():
     test_cb = handler_cb.make_value_button_cb(mocker)
 
     msg = mes.Message(
-        sender=mes.Sender(source=mes.Source.PLAYER, trigger=mes.Trigger.BUTTON_PRESS),
+        sender=mes.Sender(source=mes.Source.PLAYER, trigger=mes.Trigger.BUTTON),
         content=mes.ValueButton(
             press_release=mes.PressRelease.PRESS,
             component=mes.Component.LEFT_DECK,
