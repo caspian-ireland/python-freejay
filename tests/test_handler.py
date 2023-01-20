@@ -60,7 +60,7 @@ def test_register_handler(cb_class_f, handler_f):
 def test_calls_correct_cb(handler_f, cb_class_f):
 
     msg1 = mes.Message(
-        sender=mes.Sender(source=mes.Source.PLAYER, trigger=mes.Trigger.BUTTON_PRESS),
+        sender=mes.Sender(source=mes.Source.PLAYER, trigger=mes.Trigger.BUTTON),
         content=mes.Button(
             press_release=mes.PressRelease.PRESS,
             component=mes.Component.LEFT_DECK,
@@ -69,7 +69,7 @@ def test_calls_correct_cb(handler_f, cb_class_f):
     )
 
     msg2 = mes.Message(
-        sender=mes.Sender(source=mes.Source.PLAYER, trigger=mes.Trigger.BUTTON_PRESS),
+        sender=mes.Sender(source=mes.Source.PLAYER, trigger=mes.Trigger.BUTTON),
         content=mes.Button(
             press_release=mes.PressRelease.PRESS,
             component=mes.Component.LEFT_DECK,
@@ -78,7 +78,7 @@ def test_calls_correct_cb(handler_f, cb_class_f):
     )
 
     msg3 = mes.Message(
-        sender=mes.Sender(source=mes.Source.PLAYER, trigger=mes.Trigger.BUTTON_PRESS),
+        sender=mes.Sender(source=mes.Source.PLAYER, trigger=mes.Trigger.BUTTON),
         content=mes.Button(
             press_release=mes.PressRelease.PRESS,
             component=mes.Component.RIGHT_DECK,
@@ -99,7 +99,7 @@ def test_calls_correct_cb(handler_f, cb_class_f):
 def test_no_match_logs_warning(handler_f, cb_class_f, caplog):
 
     msg1 = mes.Message(
-        sender=mes.Sender(source=mes.Source.PLAYER, trigger=mes.Trigger.BUTTON_PRESS),
+        sender=mes.Sender(source=mes.Source.PLAYER, trigger=mes.Trigger.BUTTON),
         content=mes.Button(
             press_release=mes.PressRelease.PRESS,
             component=mes.Component.LEFT_DECK,
@@ -108,7 +108,7 @@ def test_no_match_logs_warning(handler_f, cb_class_f, caplog):
     )
 
     msg2 = mes.Message(
-        sender=mes.Sender(source=mes.Source.PLAYER, trigger=mes.Trigger.BUTTON_PRESS),
+        sender=mes.Sender(source=mes.Source.PLAYER, trigger=mes.Trigger.BUTTON),
         content=mes.Button(
             press_release=mes.PressRelease.PRESS,
             component=mes.Component.MIXER,

@@ -45,11 +45,9 @@ class Source(Enum):
 class Trigger(Enum):
     """Enum for message trigger events."""
 
-    BUTTON_PRESS = 0
-    BUTTON_RELEASE = 1
-    KEY_PRESS = 2
-    KEY_RELEASE = 3
-    VALUE_INPUT = 4
+    BUTTON = 0
+    KEY = 1
+    VALUE_INPUT = 2
 
 
 class Type(Enum):

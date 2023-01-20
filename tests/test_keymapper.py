@@ -22,7 +22,7 @@ def consumer_f():
 @pytest.fixture
 def message_f():
     msg = mes.Message(
-        sender=mes.Sender(source=mes.Source.PLAYER, trigger=mes.Trigger.KEY_PRESS),
+        sender=mes.Sender(source=mes.Source.PLAYER, trigger=mes.Trigger.KEY),
         content=mes.Key(press_release=mes.PressRelease.PRESS, sym="q"),
         type=mes.Type.KEY,
     )
