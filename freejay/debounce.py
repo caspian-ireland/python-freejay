@@ -3,6 +3,8 @@
 import typing
 import collections
 from threading import Timer
+from freejay import produce_consume as prodcon
+from freejay import messages as mes
 
 
 class Debouncer(object):
@@ -105,3 +107,36 @@ class KeyBoardDebouncer:
     def released(self, event):
         """Key released callback."""
         self.debouncer[self.getkey(event)].released(event)
+
+
+class MessageDebouncer(prodcon.Producer, prodcon.Consumer):
+    """
+    Debounce (Key) Messages.
+
+    Wraps KeyBoardDebouncer and implements the Producer and Consumer
+    protocols to listen for incoming messages and send debounced messages.
+
+    Message is parsed for the key (str) which is used by KeyBoardDebouncer to
+    create the debouncer for the key. When a message is recieved, it is parsed
+    for press/release and directed to the appropriate method.
+    On debounced press/release, the message is dispatched.
+    """
+
+    def __init__(self):
+        """Construct MessageDebouncer."""
+        self.debouncer = KeyBoardDebouncer(
+            getkey=lambda m: m.content.sym,
+            pressed_cb=self.send_message,
+            released_cb=self.send_message,
+        )
+
+    def on_message_recieved(self, message: mes.Message[mes.Key]):
+        """Direct incoming messages to the appropriate callback.
+
+        Args:
+            message (mes.Message[mes.Key]): Key Message.
+        """
+        if message.content.press_release == mes.PressRelease.PRESS:
+            self.debouncer.pressed(message)
+        else:
+            self.debouncer.released(message)
