@@ -7,7 +7,7 @@ from __future__ import annotations
 import typing
 import logging
 import abc
-from freejay import messages
+from freejay.messages import messages
 
 logger = logging.getLogger(__name__)
 

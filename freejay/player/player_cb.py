@@ -7,10 +7,10 @@ changing the state of the audio player as required.
 """
 
 import typing
-from freejay import djplayer
-from freejay import handler_cb
-from freejay import handler
-from freejay import messages as mes
+from freejay.player import djplayer
+from freejay.message_dispatcher import handler_cb
+from freejay.message_dispatcher import handler
+from freejay.messages import messages as mes
 
 
 def make_cue_callback(

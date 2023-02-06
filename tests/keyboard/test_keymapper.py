@@ -1,7 +1,7 @@
 import pytest
-from freejay import messages as mes
-from freejay import produce_consume as prodcon
-from freejay import keymapper
+from freejay.messages import messages as mes
+from freejay.messages import produce_consume as prodcon
+from freejay.keyboard import keymapper
 
 
 # Simple class that implements

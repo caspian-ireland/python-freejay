@@ -9,7 +9,7 @@ appropriate callback function.
 import typing
 import logging
 import collections
-from freejay import messages as mes
+from freejay.messages import messages as mes
 
 
 logger = logging.getLogger(__name__)

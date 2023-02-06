@@ -1,5 +1,5 @@
-from freejay import tk_components
-from freejay import messages as mes
+from freejay.tk import tk_components
+from freejay.messages import messages as mes
 from unittest.mock import Mock
 
 

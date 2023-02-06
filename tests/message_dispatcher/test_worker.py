@@ -2,8 +2,8 @@ import pytest
 import queue
 import threading
 import retry
-from freejay import worker
-from freejay import messages as mes
+from freejay.message_dispatcher import worker
+from freejay.messages import messages as mes
 
 
 @pytest.fixture

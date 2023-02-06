@@ -3,7 +3,7 @@ Functions to generate callback functions for the message handler.
 """
 
 import typing
-from freejay import messages as mes
+from freejay.messages import messages as mes
 
 # from freejay import djplayer
 

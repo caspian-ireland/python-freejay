@@ -1,12 +1,12 @@
 import pytest
-from freejay.player import IPlayer
-from freejay.djplayer import DJPlayer
+from freejay.player.player import IPlayer
+from freejay.player.djplayer import DJPlayer
 from unittest import mock
 
 
 @pytest.fixture
 def player_f(mocker):
-    mocker.patch("tests.test_djplayer.IPlayer", autospec=True)
+    mocker.patch("tests.player.test_djplayer.IPlayer", autospec=True)
     player = IPlayer(mock.Mock())
     player.playing = False
     return player
@@ -14,7 +14,7 @@ def player_f(mocker):
 
 @pytest.fixture
 def loaded_player_f(mocker, mock_mp4):
-    mocker.patch("tests.test_djplayer.IPlayer", autospec=True)
+    mocker.patch("tests.player.test_djplayer.IPlayer", autospec=True)
     player = IPlayer(mock.Mock())
     player.playing = False
     djplayer = DJPlayer(player)

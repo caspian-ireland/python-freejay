@@ -3,8 +3,8 @@
 import typing
 import collections
 from threading import Timer
-from freejay import produce_consume as prodcon
-from freejay import messages as mes
+from freejay.messages import produce_consume as prodcon
+from freejay.messages import messages as mes
 
 
 class Debouncer(object):

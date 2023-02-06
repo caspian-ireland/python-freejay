@@ -3,16 +3,16 @@
 import os
 import logging
 import mpv
-from freejay import tk_components
-from freejay import messages as mes
-from freejay import worker
-from freejay import router
-from freejay import debounce
-from freejay.djplayer import DJPlayer
-from freejay.player import PlayerMpv
-from freejay.handler import Handler
-from freejay.keymapper import KeyMapper, keybindings
-from freejay import player_cb
+from freejay.tk import tk_components
+from freejay.messages import messages as mes
+from freejay.message_dispatcher import worker
+from freejay.messages import router
+from freejay.keyboard import debounce
+from freejay.player.djplayer import DJPlayer
+from freejay.player.player import PlayerMpv
+from freejay.message_dispatcher.handler import Handler
+from freejay.keyboard.keymapper import KeyMapper, keybindings
+from freejay.player import player_cb
 
 logger = logging.getLogger(__name__)
 
