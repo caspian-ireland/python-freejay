@@ -2,8 +2,11 @@
 Keymapper implements keybindings, mapping key event messages into action messages.
 """
 
+import logging
 from freejay import messages as mes
 from freejay import produce_consume as prodcon
+
+logger = logging.getLogger(__name__)
 
 # TODO: Better way of storing this
 keybindings = {
@@ -55,19 +58,23 @@ class KeyMapper(prodcon.Consumer, prodcon.Producer):
             TypeError: Message with type != 'Key'.
         """
         if isinstance(message.content, mes.Key):
-            keybinding = self.keybindings[message.content.sym]
+            try:
+                keybinding = self.keybindings[message.content.sym]
+                newmessage = mes.Message(
+                    sender=message.sender,
+                    type=keybinding["type"],
+                    content=keybinding["content_type"](
+                        press_release=message.content.press_release,
+                        **keybinding["content"],
+                    ),
+                )
+
+                self.send_message(newmessage)
+            except KeyError as e:
+                logger.info(f"No keybinding registered for {e}")
+
         else:
             raise TypeError("KeyMapper only handles Messages with content type 'Key'.")
-        newmessage = mes.Message(
-            sender=message.sender,
-            type=keybinding["type"],
-            content=keybinding["content_type"](
-                press_release=message.content.press_release,
-                **keybinding["content"],
-            ),
-        )
-
-        self.send_message(newmessage)
 
     def on_message_recieved(self, message: mes.Message):
         """Call `map` method.
