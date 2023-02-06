@@ -47,22 +47,3 @@ class MessageRouter(prodcon.Consumer):
         for route in self.routes:
             if route["condition"](message):
                 return route["consumer"](message)
-
-
-# def make_message_router(queue, debouncer):
-
-#     message_router = MessageRouter()
-#     message_router.register_route(
-#         condition=lambda m: m
-#         in (
-#             messages.Type.BUTTON,
-#             messages.Type.SET_VALUE,
-#             messages.Type.VALUE_BUTTON,
-#         ),
-#         consumer=queue,
-#     )
-#     message_router.register_route(
-#         condition=lambda m: m in (messages.Type.KEY), consumer=debouncer
-#     )
-
-#     return message_router
