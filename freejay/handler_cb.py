@@ -119,8 +119,3 @@ def make_set_value_cb(
         cb(value=message.content.value)
 
     return callback
-
-
-# def make_cue_callback(deck: djplayer.DJPlayer):
-#     callback = make_button_cb(press_cb=deck.cue_press, release_cb=deck.cue_release)
-#     return callback
