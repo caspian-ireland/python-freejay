@@ -3,8 +3,8 @@ Keymapper implements keybindings, mapping key event messages into action message
 """
 
 import logging
-from freejay import messages as mes
-from freejay import produce_consume as prodcon
+from freejay.messages import messages as mes
+from freejay.messages import produce_consume as prodcon
 
 logger = logging.getLogger(__name__)
 

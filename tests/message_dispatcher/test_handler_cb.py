@@ -1,7 +1,7 @@
 import pytest
 from unittest import mock
-from freejay import handler_cb
-from freejay import messages as mes
+from freejay.message_dispatcher import handler_cb
+from freejay.messages import messages as mes
 
 
 # Construct message for use in tests

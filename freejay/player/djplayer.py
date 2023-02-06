@@ -4,7 +4,7 @@ The DJPlayer module holds the DJPlayer class, representing a DJ audio player.
 """
 
 import logging
-from freejay.player import IPlayer
+from freejay.player.player import IPlayer
 
 logger = logging.getLogger(__name__)
 

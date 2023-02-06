@@ -1,8 +1,8 @@
 import pytest
 import copy
-from freejay import router
-from freejay import messages
-from freejay import produce_consume as prodcon
+from freejay.messages import router
+from freejay.messages import messages
+from freejay.messages import produce_consume as prodcon
 
 
 # Simple class that implements

@@ -1,6 +1,6 @@
 import pytest
-from freejay import handler
-from freejay import messages as mes
+from freejay.message_dispatcher import handler
+from freejay.messages import messages as mes
 
 
 @pytest.fixture
