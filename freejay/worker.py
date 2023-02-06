@@ -6,6 +6,7 @@ import queue
 import typing
 import threading
 from freejay import messages as mes
+from freejay import produce_consume as prodcon
 
 
 class WorkCycle:
@@ -59,3 +60,23 @@ class Worker:
     def stop(self):
         """Stop the workcycle."""
         self.workcycle.running = False
+
+
+class QueueListener(queue.Queue, prodcon.Consumer):
+    """
+    Queue Listener.
+
+    Extends the Queue class, implementing the Consumer protocol
+    to add messages to the queue when messages are received.
+    """
+
+    def on_message_recieved(self, message: mes.Message):
+        """
+        Recieve Messages.
+
+        When messages are recieved, they are added to the queue.
+
+        Args:
+            message (mes.Message): Message
+        """
+        self.put(message)
