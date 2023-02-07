@@ -1,3 +1,5 @@
+"""Tkinter components for player (deck)."""
+
 import typing
 import os
 import customtkinter as ctk
@@ -5,43 +7,8 @@ from freejay.messages import messages as mes
 from .tk_components import TkComponent, TkRoot
 
 
-class TkMain(TkComponent):
-    """
-    Main application frame.
-
-    Keybindings are registered here.
-    """
-
-    def __init__(
-        self,
-        tkroot: TkRoot,
-        parent: typing.Any,
-        source: mes.Source,
-    ):
-        """Construct TkMain.
-
-        Args:
-            tkroot (TkRoot): Top-level Tk widget.
-            source (mes.Source): Source to use for messages.
-        """
-        super().__init__(tkroot=tkroot, parent=parent, source=source)
-        self.frame = ctk.CTkFrame(self.parent)
-        self.tkroot.bind(
-            "<KeyPress>",
-            lambda event: self.key_send(
-                press_release=mes.PressRelease.PRESS, tkevent=event
-            ),
-        )
-        self.tkroot.bind(
-            "<KeyRelease>",
-            lambda event: self.key_send(
-                press_release=mes.PressRelease.RELEASE, tkevent=event
-            ),
-        )
-
-
 class TkDeckPlayControls(TkComponent):
-    """Deck (player) frame."""
+    """Deck playback control frame."""
 
     def __init__(
         self,
@@ -50,10 +17,13 @@ class TkDeckPlayControls(TkComponent):
         source: mes.Source,
         component: mes.Component,
     ):
-        """Construct TkDeck.
+        """Construct TkDeckPlayControls.
+
+        Note: this is intended to be created by TkDeck.
 
         Args:
             tkroot (TkRoot): Top-level Tk widget.
+            parent: Parent Tk widget.
             source (mes.Source): Message source.
             component (mes.Component): Message Component (LEFT_DECK or RIGHT_DECK)
         """
@@ -136,7 +106,7 @@ class TkDeckPlayControls(TkComponent):
 
 
 class TkDeckPitchControls(TkComponent):
-    """Deck (player) frame."""
+    """Deck pitch controls frame."""
 
     def __init__(
         self,
@@ -145,10 +115,13 @@ class TkDeckPitchControls(TkComponent):
         source: mes.Source,
         component: mes.Component,
     ):
-        """Construct TkDeck.
+        """Construct TkDeckPitchControls.
+
+        Note: this is intended to be created by TkDeck.
 
         Args:
             tkroot (TkRoot): Top-level Tk widget.
+            parent: Parent Tk widget.
             source (mes.Source): Message source.
             component (mes.Component): Message Component (LEFT_DECK or RIGHT_DECK)
         """
@@ -196,6 +169,7 @@ class TkDeck(TkComponent):
 
         Args:
             tkroot (TkRoot): Top-level Tk widget.
+            parent: Parent Tk widget.
             source (mes.Source): Message source.
             component (mes.Component): Message Component (LEFT_DECK or RIGHT_DECK)
         """

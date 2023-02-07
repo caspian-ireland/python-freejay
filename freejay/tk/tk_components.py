@@ -40,6 +40,7 @@ class TkComponent:
 
         Args:
             tkroot (TkRoot): Top level Tk widget.
+            parent: parent Tk widget.
             source (mes.Source): TkComponent message source.
         """
         self.tkroot = tkroot
@@ -135,15 +136,37 @@ class TkComponent:
         image_path: typing.Optional[str] = None,
         **kwargs
     ) -> ctk.CTkButton:
+        """
+        Make a button.
 
+        Helper method to initialise and render a button that sends messages.
+
+        Args:
+            parent: parent Tk widget
+            row (int): grid row for button position
+            column (int): grid column for button position
+            component (mes.Component): message component
+            element (mes.Element): message element
+            text (typing.Optional[str], optional): Button text. Defaults to None.
+            image_path (typing.Optional[str], optional): Path to button icon.
+                Defaults to None.
+            **kwargs: Named arguments to pass to CTkButton initialiser.
+
+        Returns:
+            ctk.CTkButton: Button widget
+        """
+        # Use image if supplied
         if image_path:
             image = Image.open(image_path).resize((20, 20), Image.LANCZOS)
             photo_image = ctk.CTkImage(image)
         else:
             photo_image = None
 
+        # Create button and configure grid positioning
         btn = ctk.CTkButton(parent, image=photo_image, text=text, **kwargs)
         btn.grid(row=row, column=column, padx=10, pady=10)
+
+        # Add press/release bindings
         btn.bind(
             "<ButtonPress-1>",
             lambda event: self.button_send(
@@ -175,7 +198,28 @@ class TkComponent:
         image_path: typing.Optional[str] = None,
         **kwargs
     ) -> ctk.CTkButton:
+        """Make a value button.
 
+        Helper method to initialise and render a value button that sends messages.
+
+        Args:
+            parent: parent Tk widget
+            row (int): grid row for button position
+            column (int): grid column for button position
+            component (mes.Component): message component
+            element (mes.Element): message element
+            value_press ([bool|str|int|float], optional): Value to send on press.
+                Defaults to None.
+            value_release ([bool|str|int|float], optional): Value to send on release.
+                Defaults to None.
+            text (typing.Optional[str], optional): Button text. Defaults to None.
+            image_path (typing.Optional[str], optional): Path to button icon.
+                Defaults to None.
+            **kwargs: Named arguments to pass to CTkButton initialiser.
+
+        Returns:
+            ctk.CTkButton: Button widget
+        """
         if image_path:
             image = Image.open(image_path).resize((20, 20), Image.LANCZOS)
             photo_image = ctk.CTkImage(image)
@@ -204,3 +248,38 @@ class TkComponent:
         )
 
         return btn
+
+
+class TkMain(TkComponent):
+    """
+    Main application frame.
+
+    Keybindings are registered here.
+    """
+
+    def __init__(
+        self,
+        tkroot: TkRoot,
+        parent: typing.Any,
+        source: mes.Source,
+    ):
+        """Construct TkMain.
+
+        Args:
+            tkroot (TkRoot): Top-level Tk widget.
+            source (mes.Source): Source to use for messages.
+        """
+        super().__init__(tkroot=tkroot, parent=parent, source=source)
+        self.frame = ctk.CTkFrame(self.parent)
+        self.tkroot.bind(
+            "<KeyPress>",
+            lambda event: self.key_send(
+                press_release=mes.PressRelease.PRESS, tkevent=event
+            ),
+        )
+        self.tkroot.bind(
+            "<KeyRelease>",
+            lambda event: self.key_send(
+                press_release=mes.PressRelease.RELEASE, tkevent=event
+            ),
+        )
