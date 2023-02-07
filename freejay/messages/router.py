@@ -1,9 +1,11 @@
 """Message Routing to route messages depending on some condition."""
 
 import typing
+import logging
 from freejay.messages import messages
 from freejay.messages import produce_consume as prodcon
 
+logger = logging.getLogger(__name__)
 
 # Type variable representing function that accepts a message
 # and returns True/False based on some logic.
@@ -44,6 +46,7 @@ class MessageRouter(prodcon.Consumer):
         Args:
             message (messages.Message): Message to route
         """
+        logger.debug(f"Routing message: {message}")
         for route in self.routes:
             if route["condition"](message):
                 return route["consumer"](message)
