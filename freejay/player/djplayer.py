@@ -22,7 +22,7 @@ class DJPlayer:
         __speed(float): Playback speed.
         __cue_mode (bool): Is the player in cue mode?
         __time_cue (float): The cue point.
-        __nudge_amount(float): Current pitch nudge amount.
+        __nudge_value(float): Current pitch nudge value.
         __player(IPlayer): Audio player.
 
     Methods:
@@ -31,10 +31,10 @@ class DJPlayer:
         stop(): Stop the track and return to start.
         cue_press(): Represents cue button press.
         cue_release(): Represents cue button release.
-        nudge_press(amount): Represents pitch nudge press.
+        nudge_press(value): Represents pitch nudge press.
         nudge_release(): Represents pitch nudge release.
-        jog(amount): Jog (relative seek) the track by amount.
-        __nudge(amount): Helper to apply pitch nudge.
+        jog(value): Jog (relative seek) the track by value.
+        __nudge(value): Helper to apply pitch nudge.
     """
 
     def __init__(self, player: IPlayer):
@@ -48,7 +48,7 @@ class DJPlayer:
         self.__speed = 1.0
         self.__cue_mode = True
         self.__time_cue = 0.0
-        self.__nudge_amount = 0.0
+        self.__nudge_value = 0.0
         self.__player = player
 
     def load(self, filename: str):
@@ -124,7 +124,7 @@ class DJPlayer:
     @speed.setter  # When you set the speed, update it in the player too.
     def speed(self, val: float):
         self.__speed = val
-        self.__nudge(self.__nudge_amount)
+        self.__nudge(self.__nudge_value)
 
     @property
     def volume(self) -> float:
@@ -150,7 +150,7 @@ class DJPlayer:
         """Cue point time."""
         return self.__time_cue
 
-    def nudge_press(self, amount: float = 0.15):
+    def nudge_press(self, value: float = 0.15):
         """
         Pitch nudge start.
 
@@ -158,33 +158,33 @@ class DJPlayer:
         the start of the nudge, see also `nudge_release`.
 
         Args:
-            amount(float): Nudge amount. Positive numbers represent speed
+            value(float): Nudge value. Positive numbers represent speed
                 increase and negative numbers represent speed decrease. E.g
-                amount = -0.15 would decrease speed by 15%.
+                value = -0.15 would decrease speed by 15%.
 
         Raises:
-            ValueError if amount outside the range (-1, 1)
+            ValueError if value outside the range (-1, 1)
         """
-        if not -1 < amount < 1:
-            raise ValueError("Amount must be in the range (-1, 1).")
+        if not -1 < value < 1:
+            raise ValueError("value must be in the range (-1, 1).")
         else:
-            self.__nudge(amount)
-            self.__nudge_amount = amount
+            self.__nudge(value)
+            self.__nudge_value = value
 
     def nudge_release(self):
         """Pitch nudge stop. See also `nudge_press`."""
         self.__nudge(0)
-        self.__nudge_amount = 0.0
+        self.__nudge_value = 0.0
 
-    def __nudge(self, amount):
-        self.__player.speed = self.speed * (1 + amount)
+    def __nudge(self, value):
+        self.__player.speed = self.speed * (1 + value)
 
-    def jog(self, amount: float = 10.0):
+    def jog(self, value: float = 10.0):
         """Jog the track.
 
         Args:
-            amount(float): Number of seconds to jog. Positive numbers
+            value(float): Number of seconds to jog. Positive numbers
                 represent forward, negative numbers represent backwards.
         """
-        self.__player.seek(amount, reference="relative")
+        self.__player.seek(value, reference="relative")
         self.__cue_mode = False

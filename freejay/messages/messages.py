@@ -33,6 +33,9 @@ class Element(Enum):
 
     CUE = 0
     PLAY_PAUSE = 1
+    NUDGE = 2
+    STOP = 3
+    JOG = 4
 
 
 class Source(Enum):
@@ -86,7 +89,7 @@ class Button(Content):
 class ValueButton(Button):
     """ValueButton message content."""
 
-    value: typing.Union[bool, int, float, str]
+    value: typing.Optional[typing.Union[bool, int, float, str]]
 
 
 @dataclasses.dataclass

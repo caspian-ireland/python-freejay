@@ -80,12 +80,15 @@ def make_value_button_cb(
             message (mes.Message[mes.ValueButton]): Message with ValueButton content.
         """
         if message.content.press_release == mes.PressRelease.PRESS:
-            press_cb(value=message.content.value)
+            if message.content.value:
+                press_cb(value=message.content.value)
+            else:
+                press_cb()
         elif (
             message.content.press_release == mes.PressRelease.RELEASE
             and release_cb is not None
         ):
-            release_cb(value=message.content.value)
+            release_cb()
 
     return callback
 

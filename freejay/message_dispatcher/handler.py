@@ -79,8 +79,8 @@ class Handler:
             self.cb_dict[message.content.component][message.content.element](message)
         except (KeyError, TypeError):
             logger.warning(
-                f"No callback registered for component {str(message.content.component)}"
-                f"and element {message.content.element}"
+                f"No callback registered for component: {str(message.content.component)}"
+                f" and element: {message.content.element}"
             )
 
     def __call__(
