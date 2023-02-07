@@ -45,6 +45,53 @@ def make_play_callback(
     return callback
 
 
+def make_stop_callback(
+    player: djplayer.DJPlayer,
+) -> typing.Callable[[mes.Message[mes.Button]], None]:
+    """Make a 'stop' callback.
+
+    Args:
+        player (djplayer.DJPlayer): Player to 'stop' on callback.
+
+    Returns:
+        typing.Callable[[mes.Message[mes.Button]], None]: Callback function
+    """
+    callback = handler_cb.make_button_cb(press_cb=player.stop)
+    return callback
+
+
+def make_nudge_callback(
+    player: djplayer.DJPlayer,
+) -> typing.Callable[[mes.Message[mes.ValueButton]], None]:
+    """Make a 'nudge' callback.
+
+    Args:
+        player (djplayer.DJPlayer): Player to 'nudge' on callback.
+
+    Returns:
+        typing.Callable[[mes.Message[mes.ValueButton]], None]: Callback function
+    """
+    callback = handler_cb.make_value_button_cb(
+        press_cb=player.nudge_press, release_cb=player.nudge_release
+    )
+    return callback
+
+
+def make_jog_callback(
+    player: djplayer.DJPlayer,
+) -> typing.Callable[[mes.Message[mes.ValueButton]], None]:
+    """Make a 'jog' callback.
+
+    Args:
+        player (djplayer.DJPlayer): Player to 'jog' on callback.
+
+    Returns:
+        typing.Callable[[mes.Message[mes.ValueButton]], None]: Callback function
+    """
+    callback = handler_cb.make_value_button_cb(press_cb=player.jog)
+    return callback
+
+
 def register_player_cb(
     handler: handler.Handler, player: djplayer.DJPlayer, component: mes.Component
 ):
@@ -64,4 +111,20 @@ def register_player_cb(
         callback=make_play_callback(player),
         component=component,
         element=mes.Element.PLAY_PAUSE,
+    )
+    handler.register_handler(
+        callback=make_stop_callback(player),
+        component=component,
+        element=mes.Element.STOP,
+    )
+    handler.register_handler(
+        callback=make_nudge_callback(player),
+        component=component,
+        element=mes.Element.NUDGE,
+    )
+
+    handler.register_handler(
+        callback=make_jog_callback(player),
+        component=component,
+        element=mes.Element.JOG,
     )
