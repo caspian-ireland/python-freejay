@@ -13,7 +13,6 @@ keybindings = {
     "q": {
         "name": "cue-left",
         "content_type": mes.Button,
-        "type": mes.Type.BUTTON,
         "content": {
             "component": mes.Component.LEFT_DECK,
             "element": mes.Element.CUE,
@@ -22,10 +21,35 @@ keybindings = {
     "w": {
         "name": "play_pause-left",
         "content_type": mes.Button,
-        "type": mes.Type.BUTTON,
         "content": {
             "component": mes.Component.LEFT_DECK,
             "element": mes.Element.PLAY_PAUSE,
+        },
+    },
+    "e": {
+        "name": "nudge-slow-left",
+        "content_type": mes.ValueButton,
+        "content": {
+            "component": mes.Component.LEFT_DECK,
+            "element": mes.Element.NUDGE,
+            "value": -0.1,
+        },
+    },
+    "r": {
+        "name": "nudge-fast-left",
+        "content_type": mes.ValueButton,
+        "content": {
+            "component": mes.Component.LEFT_DECK,
+            "element": mes.Element.NUDGE,
+            "value": 0.1,
+        },
+    },
+    "p": {
+        "name": "stop-left",
+        "content_type": mes.Button,
+        "content": {
+            "component": mes.Component.LEFT_DECK,
+            "element": mes.Element.STOP,
         },
     },
 }
@@ -62,7 +86,6 @@ class KeyMapper(prodcon.Consumer, prodcon.Producer):
                 keybinding = self.keybindings[message.content.sym]
                 newmessage = mes.Message(
                     sender=message.sender,
-                    type=keybinding["type"],
                     content=keybinding["content_type"](
                         press_release=message.content.press_release,
                         **keybinding["content"],
