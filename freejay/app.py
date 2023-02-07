@@ -92,7 +92,7 @@ def make_app():
     ctk.set_appearance_mode("System")
     ctk.set_default_color_theme("blue")
     tkroot = tk_components.TkRoot()
-    tkmain = tk_player.TkMain(
+    tkmain = tk_components.TkMain(
         tkroot, parent=tkroot, source=mes.Source.MAIN_WINDOW
     )  # noqa
 
