@@ -3,7 +3,9 @@
 import os
 import logging
 import mpv
+import customtkinter as ctk
 from freejay.tk import tk_components
+from freejay.tk import tk_player
 from freejay.messages import messages as mes
 from freejay.message_dispatcher import worker
 from freejay.messages import router
@@ -87,21 +89,35 @@ def make_app():
     # === Configure Tkinter application. ===
 
     # Create tkinter components
+    ctk.set_appearance_mode("System")
+    ctk.set_default_color_theme("blue")
     tkroot = tk_components.TkRoot()
-    tkmain = tk_components.TkMain(tkroot, source=mes.Source.MAIN_WINDOW)  # noqa
-    left_deck = tk_components.TkDeck(
-        tkroot=tkroot, source=mes.Source.PLAYER, component=mes.Component.LEFT_DECK
+    tkmain = tk_player.TkMain(
+        tkroot, parent=tkroot, source=mes.Source.MAIN_WINDOW
+    )  # noqa
+
+    left_deck = tk_player.TkDeck(
+        tkroot=tkroot,
+        parent=tkmain.frame,
+        source=mes.Source.PLAYER,
+        component=mes.Component.LEFT_DECK,
     )
-    right_deck = tk_components.TkDeck(
-        tkroot=tkroot, source=mes.Source.PLAYER, component=mes.Component.RIGHT_DECK
+    right_deck = tk_player.TkDeck(
+        tkroot=tkroot,
+        parent=tkmain.frame,
+        source=mes.Source.PLAYER,
+        component=mes.Component.RIGHT_DECK,
     )
 
     # Configure layout
-    tkroot.grid_rowconfigure(1, weight=1)
+    tkroot.geometry("1200x300")
+    tkroot.grid_rowconfigure(0, weight=1)
     tkroot.grid_columnconfigure(0, weight=1)
-
-    left_deck.frame.grid(row=0, column=0, sticky="ew")
-    right_deck.frame.grid(row=0, column=1, sticky="ew")
+    tkmain.frame.grid(row=0, column=0)
+    tkmain.frame.grid_rowconfigure(0, weight=1)
+    tkmain.frame.grid_columnconfigure((0, 1), weight=1)
+    left_deck.frame.grid(row=0, column=0, sticky="w")
+    right_deck.frame.grid(row=0, column=1, sticky="e")
 
     # === Initialise backend components ===
     left_player = DJPlayer(player=PlayerMpv(mpv.MPV()))
