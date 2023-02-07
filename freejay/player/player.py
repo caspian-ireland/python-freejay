@@ -105,11 +105,11 @@ class IPlayer(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def seek(self, amount: float, reference: str = "absolute"):
+    def seek(self, value: float, reference: str = "absolute"):
         """Seek to a position in the track.
 
         Args:
-            amount(float): Amount to seek in seconds.
+            value(float): Amount to seek in seconds.
             reference(str): Allowed values ('absolute', 'relative')
                 Defaults to 'absolute'.
 
@@ -211,7 +211,7 @@ class PlayerMpv(IPlayer):
         load(filename): Load a file into the deck
         play(): Play the track.
         pause(): Pause the track.
-        seek(amount, reference): Seek to a position in the track.
+        seek(value, reference): Seek to a position in the track.
     """
 
     def __init__(self, player: MPV):
@@ -267,11 +267,11 @@ class PlayerMpv(IPlayer):
         self.__playing = False
 
     @_check_file_loaded
-    def seek(self, amount: float, reference: str = "absolute"):
+    def seek(self, value: float, reference: str = "absolute"):
         """Seek to a position in the track.
 
         Args:
-            amount (float): Amount to seek in seconds
+            value (float): Amount to seek in seconds
             reference (str, optional): Should seek be 'relative' or 'absolute'.
                 Defaults to "absolute".
 
@@ -283,7 +283,7 @@ class PlayerMpv(IPlayer):
         if reference not in allowed_reference:
             raise ValueError(f"seek: reference must be one of {allowed_reference}.")
 
-        self.__player.seek(amount=amount, reference=reference)
+        self.__player.seek(amount=value, reference=reference)
 
     @property
     def speed(self) -> float:

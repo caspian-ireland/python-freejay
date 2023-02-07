@@ -93,7 +93,7 @@ def test_play_pause(mpv_f):
 
 def test_seek_calls(mpv_f):
     playermpv = freejay.player.player.PlayerMpv(mpv_f)
-    playermpv.seek(amount=10)
+    playermpv.seek(value=10)
     mpv_f.seek.assert_called_with(amount=10, reference="absolute")
 
 
@@ -102,7 +102,7 @@ def test_seek_calls(mpv_f):
 )
 def test_seek_reference_vals(mpv_f, input):
     playermpv = freejay.player.player.PlayerMpv(mpv_f)
-    playermpv.seek(amount=10, reference=input)
+    playermpv.seek(value=10, reference=input)
 
 
 def test_set_speed(mpv_f):

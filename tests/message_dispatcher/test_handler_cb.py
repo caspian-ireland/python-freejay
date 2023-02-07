@@ -103,7 +103,7 @@ def test_make_valuebutton_cb_cb_calls_correct():
     msg.content.press_release = mes.PressRelease.RELEASE
     test_cb(msg)
     mocker1.assert_called_once()
-    mocker2.assert_called_once_with(value=1)
+    mocker2.assert_called_once_with()
 
 
 def test_make_valuebutton_cb_cb_no_release():

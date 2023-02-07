@@ -106,7 +106,7 @@ def test_cue_returns_to_cuepoint_if_playing(loaded_player_f):
     player.playing = True
     djplayer.cue_press()
     djplayer.cue_release()
-    player.seek.assert_called_with(amount=20, reference="absolute")
+    player.seek.assert_called_with(value=20, reference="absolute")
     assert player.seek.call_count == 2
 
 
@@ -129,7 +129,7 @@ def test_stop_stops_and_returns_to_start(loaded_player_f):
     djplayer.stop()
     player.play.assert_not_called()
     player.pause.assert_called_once()
-    player.seek.assert_called_once_with(amount=0, reference="absolute")
+    player.seek.assert_called_once_with(value=0, reference="absolute")
 
 
 def test_speed_updates_player_speed(loaded_player_f):
@@ -142,7 +142,7 @@ def test_speed_updates_player_speed(loaded_player_f):
 def test_nudge_temp_changes_speed(loaded_player_f):
     player, djplayer = loaded_player_f
     djplayer.speed = 1.0
-    djplayer.nudge_press(amount=0.15)
+    djplayer.nudge_press(value=0.15)
     assert djplayer.speed == 1.0
     assert player.speed == 1.15
     djplayer.nudge_release()
@@ -153,7 +153,7 @@ def test_nudge_temp_changes_speed(loaded_player_f):
 def test_nudge_relative_to_base(loaded_player_f):
     player, djplayer = loaded_player_f
     djplayer.speed = 2.0
-    djplayer.nudge_press(amount=0.15)
+    djplayer.nudge_press(value=0.15)
     assert player.speed == 2.30
 
 
@@ -162,13 +162,13 @@ def test_raises_outside_range(input, loaded_player_f):
     player, djplayer = loaded_player_f
     djplayer.speed = 2.0
     with pytest.raises(ValueError):
-        djplayer.nudge_press(amount=input)
+        djplayer.nudge_press(value=input)
 
 
 def test_nudge_updated_if_speed_updated(loaded_player_f):
     player, djplayer = loaded_player_f
     djplayer.speed = 1.0
-    djplayer.nudge_press(amount=0.15)
+    djplayer.nudge_press(value=0.15)
     assert djplayer.speed == 1.0
     assert player.speed == 1.15
     djplayer.speed = 2.0
@@ -182,7 +182,7 @@ def test_nudge_updated_if_speed_updated(loaded_player_f):
 def test_jog_does_relative_seek(loaded_player_f):
     player, djplayer = loaded_player_f
     djplayer.jog(20)
-    player.seek.assert_called_once_with(amount=20, reference="relative")
+    player.seek.assert_called_once_with(value=20, reference="relative")
 
 
 def test_volume_updates_player_volume(loaded_player_f):

@@ -15,7 +15,9 @@ def test_tk_component_send():
     )
 
     root_mock = Mock()
-    component_t = tk_components.TkComponent(tkroot=root_mock, source=mes.Source.PLAYER)
+    component_t = tk_components.TkComponent(
+        tkroot=root_mock, parent=root_mock, source=mes.Source.PLAYER
+    )
     component_t.send_message(msg)
 
     root_mock.send_message.assert_called_once_with(msg)
@@ -33,8 +35,10 @@ def test_tk_component_button():
     )
 
     root_mock = Mock()
-    component_t = tk_components.TkComponent(tkroot=root_mock, source=mes.Source.PLAYER)
-    component_t.button(
+    component_t = tk_components.TkComponent(
+        tkroot=root_mock, parent=root_mock, source=mes.Source.PLAYER
+    )
+    component_t.button_send(
         component=mes.Component.LEFT_DECK,
         element=mes.Element.PLAY_PAUSE,
         press_release=mes.PressRelease.PRESS,
@@ -60,9 +64,9 @@ def test_tk_component_key():
     tk_event.keysym = "q"
 
     component_t = tk_components.TkComponent(
-        tkroot=root_mock, source=mes.Source.MAIN_WINDOW
+        tkroot=root_mock, parent=root_mock, source=mes.Source.MAIN_WINDOW
     )
-    component_t.key(press_release=mes.PressRelease.PRESS, tkevent=tk_event)
+    component_t.key_send(press_release=mes.PressRelease.PRESS, tkevent=tk_event)
 
     # Get actual message passed to mock
     # Then set dt to zero to allow comparison
