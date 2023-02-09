@@ -24,7 +24,7 @@ def consumer_fixture():
 def message_fixture():
     msg = messages.Message(
         sender=messages.Sender(
-            source=messages.Source.PLAYER, trigger=messages.Trigger.KEY
+            source=messages.Source.PLAYER_UI, trigger=messages.Trigger.KEY
         ),
         content=messages.Key(press_release=messages.PressRelease.PRESS, sym="q"),
         type=messages.Type.KEY,

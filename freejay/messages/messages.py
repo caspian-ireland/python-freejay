@@ -26,6 +26,7 @@ class Component(Enum):
     MIXER = 0
     LEFT_DECK = 1
     RIGHT_DECK = 2
+    DOWNLOAD = 3
 
 
 class Element(Enum):
@@ -36,13 +37,18 @@ class Element(Enum):
     NUDGE = 2
     STOP = 3
     JOG = 4
+    DOWNLOAD = 5
 
 
 class Source(Enum):
     """Enum for message sources."""
 
     MAIN_WINDOW = 0
-    PLAYER = 1
+    PLAYER_UI = 1
+    PLAYER_SERVER = 2
+    DOWNLOAD_UI = 3
+    DOWNLOAD_SERVER = 3
+    KEY_MAPPER = 4
 
 
 class Trigger(Enum):
@@ -50,7 +56,8 @@ class Trigger(Enum):
 
     BUTTON = 0
     KEY = 1
-    VALUE_INPUT = 2
+    DATA_INPUT = 2
+    DATA_OUTPUT = 3
 
 
 class Type(Enum):

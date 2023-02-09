@@ -4,6 +4,9 @@ Rip audio files from youtube.
 
 import os
 import logging
+import typing
+import queue
+import threading
 from tempfile import gettempdir
 from urllib.error import HTTPError
 from pytube import YouTube
@@ -65,3 +68,45 @@ def yt_rip(video_link: str, destination: str | None = None) -> str:
             "Video unavailable, check the link for '%s'", video_link, exc_info=True
         )
         raise
+
+
+"""
+Tests Needed:
+
+ - Invalid URL
+ - Destination doesn't exist
+ - Tempdir not possible
+ - File no longer available (e.g. when deleting).
+
+"""
+
+
+class DownloadManager:
+    def __init__(self, destination: typing.Optional[str] = None):
+
+        if not destination:
+            destination = gettempdir()
+
+        self.destination = destination
+        self.downloads: queue.Queue[str] = queue.Queue(3)
+        self.current: typing.Optional[str] = None
+        self.__lock = threading.Lock()
+
+    def download(self, url: str):
+        t = threading.Thread(target=self.__download_helper, args=(url,))
+        t.start()
+
+    def __download_helper(self, url: str):
+
+        with self.__lock:
+            file_path = yt_rip(video_link=url, destination=self.destination)
+            self.current = file_path
+            self.__cleanup(file_path)
+
+    def __cleanup(self, file_path):
+        try:
+            self.downloads.put(file_path, block=False)
+        except queue.Full:
+            old_file = self.downloads.get()
+            os.remove(old_file)
+            self.__cleanup(file_path)
