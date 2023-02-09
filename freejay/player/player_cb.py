@@ -62,16 +62,16 @@ def make_stop_callback(
 
 def make_nudge_callback(
     player: djplayer.DJPlayer,
-) -> typing.Callable[[mes.Message[mes.ValueButton]], None]:
+) -> typing.Callable[[mes.Message[mes.Button]], None]:
     """Make a 'nudge' callback.
 
     Args:
         player (djplayer.DJPlayer): Player to 'nudge' on callback.
 
     Returns:
-        typing.Callable[[mes.Message[mes.ValueButton]], None]: Callback function
+        typing.Callable[[mes.Message[mes.Button]], None]: Callback function
     """
-    callback = handler_cb.make_value_button_cb(
+    callback = handler_cb.make_button_cb(
         press_cb=player.nudge_press, release_cb=player.nudge_release
     )
     return callback
@@ -79,16 +79,16 @@ def make_nudge_callback(
 
 def make_jog_callback(
     player: djplayer.DJPlayer,
-) -> typing.Callable[[mes.Message[mes.ValueButton]], None]:
+) -> typing.Callable[[mes.Message[mes.Button]], None]:
     """Make a 'jog' callback.
 
     Args:
         player (djplayer.DJPlayer): Player to 'jog' on callback.
 
     Returns:
-        typing.Callable[[mes.Message[mes.ValueButton]], None]: Callback function
+        typing.Callable[[mes.Message[mes.Button]], None]: Callback function
     """
-    callback = handler_cb.make_value_button_cb(press_cb=player.jog)
+    callback = handler_cb.make_button_cb(press_cb=player.jog)
     return callback
 
 

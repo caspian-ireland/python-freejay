@@ -52,6 +52,7 @@ class TkComponent:
         component: mes.Component,
         element: mes.Element,
         press_release: mes.PressRelease,
+        data: typing.Optional[typing.Dict] = None,
     ) -> None:
         """Construct and send 'Button' message.
 
@@ -59,14 +60,21 @@ class TkComponent:
             component (mes.Component): Message component
             element (mes.Element): Message Element
             press_release (mes.PressRelease): Press/Release
+            data (dict, optional): data to send, defaults to None.
         """
+        if not data:
+            data = {}
+
         msg = mes.Message(
             sender=mes.Sender(
                 source=self.source,
                 trigger=mes.Trigger.BUTTON,
             ),
             content=mes.Button(
-                press_release=press_release, component=component, element=element
+                press_release=press_release,
+                component=component,
+                element=element,
+                data=data,
             ),
         )
         self.send_message(msg)
@@ -87,35 +95,6 @@ class TkComponent:
         )
         self.send_message(msg)
 
-    def value_button_send(
-        self,
-        component: mes.Component,
-        element: mes.Element,
-        press_release: mes.PressRelease,
-        value: typing.Optional[typing.Union[bool, str, int, float]],
-    ) -> None:
-        """Construct and send 'ValueButton' message.
-
-        Args:
-            component (mes.Component): Message component
-            element (mes.Element): Message Element
-            press_release (mes.PressRelease): Press/Release
-            value (str|int|float|bool): Value for button (optional).
-        """
-        msg = mes.Message(
-            sender=mes.Sender(
-                source=self.source,
-                trigger=mes.Trigger.BUTTON,
-            ),
-            content=mes.ValueButton(
-                press_release=press_release,
-                component=component,
-                element=element,
-                value=value,
-            ),
-        )
-        self.send_message(msg)
-
     def send_message(self, msg: mes.Message):
         """Send a message.
 
@@ -132,6 +111,8 @@ class TkComponent:
         column: int,
         component: mes.Component,
         element: mes.Element,
+        data_press: typing.Optional[typing.Dict] = None,
+        data_release: typing.Optional[typing.Dict] = None,
         text: typing.Optional[str] = None,
         image_path: typing.Optional[str] = None,
         **kwargs
@@ -147,6 +128,10 @@ class TkComponent:
             column (int): grid column for button position
             component (mes.Component): message component
             element (mes.Element): message element
+            data_press (dict, optional): Data to send on press.
+                Defaults to None.
+            data_release (dict, optional): Data to send on release.
+                Defaults to None.
             text (typing.Optional[str], optional): Button text. Defaults to None.
             image_path (typing.Optional[str], optional): Path to button icon.
                 Defaults to None.
@@ -173,6 +158,7 @@ class TkComponent:
                 component=component,
                 element=element,
                 press_release=mes.PressRelease.PRESS,
+                data=data_press,
             ),
         )
         btn.bind(
@@ -181,72 +167,9 @@ class TkComponent:
                 component=component,
                 element=element,
                 press_release=mes.PressRelease.RELEASE,
+                data=data_release,
             ),
         )
-        return btn
-
-    def make_value_button(
-        self,
-        parent,
-        row: int,
-        column: int,
-        component: mes.Component,
-        element: mes.Element,
-        value_press: typing.Optional[typing.Union[bool, str, int, float]] = None,
-        value_release: typing.Optional[typing.Union[bool, str, int, float]] = None,
-        text: typing.Optional[str] = None,
-        image_path: typing.Optional[str] = None,
-        **kwargs
-    ) -> ctk.CTkButton:
-        """Make a value button.
-
-        Helper method to initialise and render a value button that sends messages.
-
-        Args:
-            parent: parent Tk widget
-            row (int): grid row for button position
-            column (int): grid column for button position
-            component (mes.Component): message component
-            element (mes.Element): message element
-            value_press ([bool|str|int|float], optional): Value to send on press.
-                Defaults to None.
-            value_release ([bool|str|int|float], optional): Value to send on release.
-                Defaults to None.
-            text (typing.Optional[str], optional): Button text. Defaults to None.
-            image_path (typing.Optional[str], optional): Path to button icon.
-                Defaults to None.
-            **kwargs: Named arguments to pass to CTkButton initialiser.
-
-        Returns:
-            ctk.CTkButton: Button widget
-        """
-        if image_path:
-            image = Image.open(image_path).resize((20, 20), Image.LANCZOS)
-            photo_image = ctk.CTkImage(image)
-        else:
-            photo_image = None
-
-        btn = ctk.CTkButton(parent, text=text, image=photo_image, **kwargs)
-        btn.grid(row=row, column=column, padx=10, pady=10)
-        btn.bind(
-            "<ButtonPress-1>",
-            lambda event: self.value_button_send(
-                component=component,
-                element=element,
-                press_release=mes.PressRelease.PRESS,
-                value=value_press,
-            ),
-        )
-        btn.bind(
-            "<ButtonRelease-1>",
-            lambda event: self.value_button_send(
-                component=component,
-                element=element,
-                press_release=mes.PressRelease.RELEASE,
-                value=value_release,
-            ),
-        )
-
         return btn
 
 

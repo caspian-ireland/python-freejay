@@ -28,20 +28,20 @@ keybindings = {
     },
     "e": {
         "name": "nudge-slow-left",
-        "content_type": mes.ValueButton,
+        "content_type": mes.Button,
         "content": {
             "component": mes.Component.LEFT_DECK,
             "element": mes.Element.NUDGE,
-            "value": -0.1,
+            "data": {"value": -0.1},
         },
     },
     "r": {
         "name": "nudge-fast-left",
-        "content_type": mes.ValueButton,
+        "content_type": mes.Button,
         "content": {
             "component": mes.Component.LEFT_DECK,
             "element": mes.Element.NUDGE,
-            "value": 0.1,
+            "data": {"value": 0.1},
         },
     },
     "p": {

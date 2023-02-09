@@ -59,8 +59,7 @@ class Handler:
         self,
         message: typing.Union[
             mes.Message[mes.Button],
-            mes.Message[mes.ValueButton],
-            mes.Message[mes.SetValue],
+            mes.Message[mes.Data],
         ],
     ):
         """Handle a message.
@@ -68,8 +67,8 @@ class Handler:
         handle will try to find a registered callback using the message component
         and element. If found the message is passed to the callback function.
 
-        Note: Currently only supports messages with content type 'Button', 'ValueButton'
-        or 'SetValue'.
+        Note: Currently only supports messages with content type 'Button',
+        or 'Data'.
 
         Args:
             message (Message): A message to be handled.
@@ -90,8 +89,7 @@ class Handler:
         self,
         message: typing.Union[
             mes.Message[mes.Button],
-            mes.Message[mes.ValueButton],
-            mes.Message[mes.SetValue],
+            mes.Message[mes.Data],
         ],
     ):
         """

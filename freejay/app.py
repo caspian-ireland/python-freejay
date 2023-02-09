@@ -64,8 +64,7 @@ def register_message_routes(
         condition=lambda m: m.type
         in (
             mes.Type.BUTTON,
-            mes.Type.SET_VALUE,
-            mes.Type.VALUE_BUTTON,
+            mes.Type.DATA,
         ),
         consumer=queue,
     )

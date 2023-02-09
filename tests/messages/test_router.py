@@ -64,7 +64,7 @@ def router_fixture(consumer_fixture):
     [
         (messages.Type.BUTTON, "button"),
         (messages.Type.KEY, "key"),
-        (messages.Type.SET_VALUE, None),
+        (messages.Type.DATA, None),
     ],
 )
 def test_router(router_fixture, message_fixture, msg_type, expected):
