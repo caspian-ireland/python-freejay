@@ -66,6 +66,66 @@ class Worker:
         self.workcycle.running = False
 
 
+class WorkStreams:
+    """
+    Manage multiple workers.
+
+    Each worker is associated with a different queue and set of threads. This makes
+    it possible to separate different types of tasks.
+    """
+
+    def __init__(self):
+        """Construct WorkStreams object."""
+        self.workers: typing.Dict[str, Worker] = dict()
+
+    def add_worker(self, worker: Worker, name: str):
+        """Add a worker.
+
+        Args:
+            worker (Worker): Worker to add.
+            name (str): Worker name
+        """
+        self.workers[name] = worker
+
+    def start(self):
+        """Start the workers."""
+        for name, worker in self.workers.items():
+            worker.start()
+
+    def stop(self):
+        """Stop the workers."""
+        for name, worker in self.workers.items():
+            worker.stop()
+
+    def put(self, item: typing.Any, worker_name: str):
+        """Put an item in a worker queue.
+
+        Args:
+            item (typing.Any): Item to add to queue.
+            worker_name (str): Name of worker.
+        """
+        self.workers[worker_name].workcycle.q.put(item)
+
+    def pop(self, worker_name: str) -> typing.Any:
+        """Get an item from a worker queue.
+
+        Args:
+            worker_name (str): Name of worker.
+        """
+        self.workers[worker_name].workcycle.q.get()
+
+    def get_queue(self, worker_name: str) -> queue.Queue:
+        """Get a worker queue.
+
+        Args:
+            worker_name (str): Name of worker.
+
+        Returns:
+            Queue: Worker Queue
+        """
+        return self.workers[worker_name].workcycle.q
+
+
 class QueueListener(queue.Queue, prodcon.Consumer):
     """
     Queue Listener.
