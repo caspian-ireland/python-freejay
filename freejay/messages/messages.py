@@ -58,8 +58,7 @@ class Type(Enum):
 
     BUTTON = 0
     KEY = 1
-    VALUE_BUTTON = 2
-    SET_VALUE = 3
+    DATA = 2
 
 
 class Content:
@@ -83,22 +82,25 @@ class Button(Content):
     press_release: PressRelease
     component: Component
     element: Element
+    data: typing.Dict = dataclasses.field(default_factory=dict)
+
+    def __post_init__(self):
+        """
+        Dataclass post init.
+
+        If data is assigned none, replace with dict.
+        """
+        if self.data is None:
+            self.data = dict()
 
 
 @dataclasses.dataclass
-class ValueButton(Button):
-    """ValueButton message content."""
-
-    value: typing.Optional[typing.Union[bool, int, float, str]]
-
-
-@dataclasses.dataclass
-class SetValue(Content):
-    """SetValue message content."""
+class Data(Content):
+    """Data message content."""
 
     component: Component
     element: Element
-    value: typing.Union[bool, int, float, str]
+    data: typing.Dict = dataclasses.field(default_factory=dict)
 
 
 @dataclasses.dataclass
@@ -114,8 +116,7 @@ T = typing.TypeVar("T", bound=Content)
 _type_mapping = {
     "Key": Type.KEY,
     "Button": Type.BUTTON,
-    "ValueButton": Type.VALUE_BUTTON,
-    "SetValue": Type.SET_VALUE,
+    "Data": Type.DATA,
 }
 
 

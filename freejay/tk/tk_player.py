@@ -53,45 +53,45 @@ class TkDeckPlayControls(TkComponent):
             image_path=os.path.join("assets", "icons", "icons8-play-96.png"),
         )
 
-        self.jog_backward_large_valbtn = self.make_value_button(
+        self.jog_backward_large_valbtn = self.make_button(
             parent=self.frame,
             row=0,
             column=2,
             component=self.component,
             element=mes.Element.JOG,
-            value_press=-2,
+            data_press={"value": -2},
             image_path=os.path.join("assets", "icons", "icons8-rewind-96.png"),
         )
 
-        self.jog_backward_small_valbtn = self.make_value_button(
+        self.jog_backward_small_valbtn = self.make_button(
             parent=self.frame,
             row=0,
             column=3,
             component=self.component,
             element=mes.Element.JOG,
-            value_press=-0.1,
+            data_press={"value": -0.1},
             image_path=os.path.join(
                 "assets", "icons", "icons8-resume-button-96-rotated.png"
             ),
         )
 
-        self.jog_forward_small_valbtn = self.make_value_button(
+        self.jog_forward_small_valbtn = self.make_button(
             parent=self.frame,
             row=0,
             column=4,
             component=self.component,
             element=mes.Element.JOG,
-            value_press=0.1,
+            data_press={"value": 0.1},
             image_path=os.path.join("assets", "icons", "icons8-resume-button-96.png"),
         )
 
-        self.jog_forward_large_valbtn = self.make_value_button(
+        self.jog_forward_large_valbtn = self.make_button(
             parent=self.frame,
             row=0,
             column=5,
             component=self.component,
             element=mes.Element.JOG,
-            value_press=2,
+            data_press={"value": 2},
             image_path=os.path.join("assets", "icons", "icons8-fast-forward-96.png"),
         )
 
@@ -132,25 +132,25 @@ class TkDeckPitchControls(TkComponent):
         self.frame.grid_columnconfigure((0, 1), weight=1)
         self.frame.grid(padx=30, pady=15)
 
-        self.nudge_backward_valbtn = self.make_value_button(
+        self.nudge_backward_valbtn = self.make_button(
             parent=self.frame,
             row=0,
             column=0,
             component=self.component,
             element=mes.Element.NUDGE,
-            value_press=-0.05,
+            data_press={"value": -0.05},
             image_path=os.path.join(
                 "assets", "icons", "icons8-resume-button-96-rotated.png"
             ),
         )
 
-        self.nudge_forward_valbtn = self.make_value_button(
+        self.nudge_forward_valbtn = self.make_button(
             parent=self.frame,
             row=0,
             column=1,
             component=self.component,
             element=mes.Element.NUDGE,
-            value_press=0.05,
+            data_press={"value": 0.05},
             image_path=os.path.join("assets", "icons", "icons8-resume-button-96.png"),
         )
 
