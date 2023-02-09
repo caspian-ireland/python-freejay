@@ -40,7 +40,7 @@ def register_player_callbacks(
 
 def register_message_routes(
     message_router: router.MessageRouter,
-    player_queue: worker.QueueListener,
+    server_queue: worker.QueueListener,
     debouncer: debounce.MessageDebouncer,
     keymapper: KeyMapper,
     tkroot: tk_components.TkRoot,
@@ -54,19 +54,19 @@ def register_message_routes(
 
     Args:
         message_router (router.MessageRouter): Message router
-        player_queue (worker.QueueListener): Message queue
+        server_queue (worker.QueueListener): Message queue
         debouncer (debounce.MessageDebouncer): Message debouncer
         keymapper (KeyMapper): Keybindings mapper
         tkroot (tk_components.TkRoot): Tkinter top-level widget
     """
-    # Register route for sending messages to the player_queue.
+    # Register route for sending messages to the server_queue.
     message_router.register_route(
         condition=lambda m: m.type
         in (
             mes.Type.BUTTON,
             mes.Type.DATA,
         ),
-        consumer=player_queue,
+        consumer=server_queue,
     )
 
     # Register route for sending messages to the message debouncer
@@ -98,13 +98,13 @@ def make_app():
     left_deck = tk_player.TkDeck(
         tkroot=tkroot,
         parent=tkmain.frame,
-        source=mes.Source.PLAYER,
+        source=mes.Source.PLAYER_UI,
         component=mes.Component.LEFT_DECK,
     )
     right_deck = tk_player.TkDeck(
         tkroot=tkroot,
         parent=tkmain.frame,
-        source=mes.Source.PLAYER,
+        source=mes.Source.PLAYER_UI,
         component=mes.Component.RIGHT_DECK,
     )
 
@@ -134,22 +134,25 @@ def make_app():
     message_router = router.MessageRouter()
 
     # Initialise Workers
-    handler = Handler()
+    server_handler = Handler()
+    ui_handler = Handler()
     work_streams = worker.WorkStreams()
-    player_worker = worker.Worker(worker.WorkCycle(worker.QueueListener(), handler))
-    ui_worker = worker.Worker(worker.WorkCycle(worker.QueueListener(), handler))
-    work_streams.add_worker(worker=player_worker, name="player")
+    server_worker = worker.Worker(
+        worker.WorkCycle(worker.QueueListener(), server_handler)
+    )
+    ui_worker = worker.Worker(worker.WorkCycle(worker.QueueListener(), ui_handler))
+    work_streams.add_worker(worker=server_worker, name="server")
     work_streams.add_worker(worker=ui_worker, name="ui")
 
     # === Configure backend components ===
 
     register_player_callbacks(
-        handler=handler, left_deck=left_player, right_deck=right_player
+        handler=server_handler, left_deck=left_player, right_deck=right_player
     )
 
     register_message_routes(
         message_router=message_router,
-        player_queue=work_streams.get_queue("player"),
+        server_queue=work_streams.get_queue("server"),
         debouncer=debouncer,
         keymapper=keymapper,
         tkroot=tkroot,

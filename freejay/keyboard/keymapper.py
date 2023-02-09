@@ -84,8 +84,10 @@ class KeyMapper(prodcon.Consumer, prodcon.Producer):
         if isinstance(message.content, mes.Key):
             try:
                 keybinding = self.keybindings[message.content.sym]
+                sender = message.sender
+                sender.source = mes.Source.KEY_MAPPER
                 newmessage = mes.Message(
-                    sender=message.sender,
+                    sender=sender,
                     content=keybinding["content_type"](
                         press_release=message.content.press_release,
                         **keybinding["content"],
