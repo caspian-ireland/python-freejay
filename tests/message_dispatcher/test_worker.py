@@ -11,9 +11,11 @@ def handler_f():
     class Handler:
         def __init__(self):
             self.count = 0
+            self.lock = threading.Lock()
 
         def __call__(self, message: mes.Message) -> None:
-            self.count += 1
+            with self.lock:
+                self.count += 1
 
     return Handler()
 
@@ -71,9 +73,9 @@ def test_worker_start(handler_f):
 
     q = queue.Queue()
     t_workcycle = worker.WorkCycle(q, handler_f)
-    t_worker = worker.Worker(t_workcycle)
+    t_worker = worker.Worker(t_workcycle, thread_count=1)
     t_worker.start()
-    assert_returns_true_false(t_worker.thread.is_alive, True)
+    assert_returns_true_false(t_worker.thread[0].is_alive, True)
 
 
 @pytest.mark.slow
@@ -83,9 +85,9 @@ def test_worker_stop(handler_f):
     t_workcycle = worker.WorkCycle(q, handler_f)
     t_worker = worker.Worker(t_workcycle)
     t_worker.start()
-    assert_returns_true_false(t_worker.thread.is_alive, True)
+    assert_returns_true_false(t_worker.thread[0].is_alive, True)
     t_worker.stop()
-    assert_returns_true_false(t_worker.thread.is_alive, False)
+    assert_returns_true_false(t_worker.thread[0].is_alive, False)
 
 
 @pytest.mark.slow
@@ -99,5 +101,50 @@ def test_worker_running(handler_f, msg):
     q.put(msg)
     q.put(msg)
     q.put(msg)
+    assert_returns_true_false(lambda: handler_f.count == 3, True)
+    t_worker.stop()
+
+
+@pytest.mark.slow
+def test_worker_start_multi_thread(handler_f):
+
+    thread_count = 3
+    q = queue.Queue()
+    t_workcycle = worker.WorkCycle(q, handler_f)
+    t_worker = worker.Worker(t_workcycle, thread_count=thread_count)
+    t_worker.start()
+    for i in range(thread_count):
+        assert_returns_true_false(t_worker.thread[i].is_alive, True)
+
+
+@pytest.mark.slow
+def test_worker_stop_multi_thread(handler_f):
+
+    thread_count = 3
+    q = queue.Queue()
+    t_workcycle = worker.WorkCycle(q, handler_f)
+    t_worker = worker.Worker(t_workcycle, thread_count=thread_count)
+    t_worker.start()
+    for i in range(thread_count):
+        assert_returns_true_false(t_worker.thread[i].is_alive, True)
+
+    t_worker.stop()
+    for i in range(thread_count):
+        assert_returns_true_false(t_worker.thread[i].is_alive, False)
+
+
+@pytest.mark.slow
+def test_worker_running_multi_thread(handler_f, msg):
+
+    thread_count = 3
+    q = queue.Queue()
+    t_workcycle = worker.WorkCycle(q, handler_f)
+    t_worker = worker.Worker(t_workcycle, thread_count=thread_count)
+    t_worker.start()
+
+    q.put(msg)
+    q.put(msg)
+    q.put(msg)
+
     assert_returns_true_false(lambda: handler_f.count == 3, True)
     t_worker.stop()

@@ -14,7 +14,7 @@ class WorkCycle:
 
     def __init__(
         self,
-        q: queue.Queue[typing.Type[mes.Message]],
+        q: queue.Queue[mes.Message],
         handler: typing.Callable[[mes.Message], None],
     ):
         """Construct WorkCycle.
@@ -40,22 +40,26 @@ class WorkCycle:
 
 
 class Worker:
-    """Run a workcycle on a daemon thread."""
+    """Run a workcycle on one or more daemon threads."""
 
-    def __init__(self, workcycle: WorkCycle):
+    def __init__(self, workcycle: WorkCycle, thread_count: int = 1):
         """Construct Worker.
 
         Args:
             workcycle (WorkCycle): Workcycle to run.
+            thread_count (int): Number of threads to run worker on.
         """
         self.workcycle = workcycle
-        self.thread = None
+        self.thread_count = thread_count
+        self.thread: typing.List = list()
 
     # TODO - Do I need to worry about thread leakage here?
     def start(self):
         """Start the workcycle."""
-        self.thread = threading.Thread(target=self.workcycle.start, daemon=True)
-        self.thread.start()
+        for i in range(self.thread_count):
+            thread = threading.Thread(target=self.workcycle.start, daemon=True)
+            self.thread.append(thread)
+            thread.start()
 
     def stop(self):
         """Stop the workcycle."""
