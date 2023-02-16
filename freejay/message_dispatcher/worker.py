@@ -66,7 +66,7 @@ class Worker:
         self.workcycle.running = False
 
 
-class WorkStreams:
+class WorkManager:
     """
     Manage multiple workers.
 
@@ -124,6 +124,17 @@ class WorkStreams:
             Queue: Worker Queue
         """
         return self.workers[worker_name].workcycle.q
+
+    def get_handler(self, worker_name: str) -> typing.Callable[[mes.Message], None]:
+        """Get a worker handler.
+
+        Args:
+            worker_name (str): Name of worker.
+
+        Returns:
+            typing.Callable[[mes.Message], None]: Message Handler
+        """
+        return self.workers[worker_name].workcycle.handler
 
 
 class QueueListener(queue.Queue, prodcon.Consumer):

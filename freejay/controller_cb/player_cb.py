@@ -8,9 +8,10 @@ changing the state of the audio player as required.
 
 import typing
 from freejay.player import djplayer
-from freejay.message_dispatcher import handler_cb
+from freejay.controller_cb import factories
 from freejay.message_dispatcher import handler
 from freejay.messages import messages as mes
+from freejay.audio_download.ytrip import DownloadManager
 
 
 def make_cue_callback(
@@ -24,7 +25,7 @@ def make_cue_callback(
     Returns:
         typing.Callable[[mes.Message[mes.Button]], None]: Callback function
     """
-    callback = handler_cb.make_button_cb(
+    callback = factories.make_button_cb(
         press_cb=player.cue_press, release_cb=player.cue_release
     )
     return callback
@@ -41,7 +42,7 @@ def make_play_callback(
     Returns:
         typing.Callable[[mes.Message[mes.Button]], None]: Callback function
     """
-    callback = handler_cb.make_button_cb(press_cb=player.play_pause)
+    callback = factories.make_button_cb(press_cb=player.play_pause)
     return callback
 
 
@@ -56,7 +57,7 @@ def make_stop_callback(
     Returns:
         typing.Callable[[mes.Message[mes.Button]], None]: Callback function
     """
-    callback = handler_cb.make_button_cb(press_cb=player.stop)
+    callback = factories.make_button_cb(press_cb=player.stop)
     return callback
 
 
@@ -71,7 +72,7 @@ def make_nudge_callback(
     Returns:
         typing.Callable[[mes.Message[mes.Button]], None]: Callback function
     """
-    callback = handler_cb.make_button_cb(
+    callback = factories.make_button_cb(
         press_cb=player.nudge_press, release_cb=player.nudge_release
     )
     return callback
@@ -88,18 +89,48 @@ def make_jog_callback(
     Returns:
         typing.Callable[[mes.Message[mes.Button]], None]: Callback function
     """
-    callback = handler_cb.make_button_cb(press_cb=player.jog)
+    callback = factories.make_button_cb(press_cb=player.jog)
+    return callback
+
+
+def make_load_callback(
+    player: djplayer.DJPlayer, download_manager: DownloadManager
+) -> typing.Callable[[mes.Message[mes.Button]], None]:
+    """Make load callback.
+
+    Args:
+        player (DJPlayer): player
+        download_manager (DownloadManager): Download manager.
+
+    Returns:
+        typing.Callable[[mes.Message[mes.Button]], None]: Callback function
+    """
+
+    def callback(message: mes.Message[mes.Button]) -> None:
+
+        file_path = download_manager.current
+        if (
+            file_path
+            and file_path != ""
+            and message.content.press_release == mes.PressRelease.PRESS
+        ):
+            player.load(filename=file_path)
+
     return callback
 
 
 def register_player_cb(
-    handler: handler.Handler, player: djplayer.DJPlayer, component: mes.Component
+    handler: handler.Handler,
+    player: djplayer.DJPlayer,
+    download_manager: DownloadManager,
+    component: mes.Component,
 ):
     """Register player callbacks.
 
     Args:
         handler (handler.Handler): Message handler
         player (djplayer.DJPlayer): Player
+        download_manager(DownloadManager): Download manager
         component (mes.Component): Component (e.g. LEFT_DECK, RIGHT_DECK)
     """
     handler.register_handler(
@@ -127,4 +158,10 @@ def register_player_cb(
         callback=make_jog_callback(player),
         component=component,
         element=mes.Element.JOG,
+    )
+
+    handler.register_handler(
+        callback=make_load_callback(player, download_manager),
+        component=component,
+        element=mes.Element.LOAD,
     )
