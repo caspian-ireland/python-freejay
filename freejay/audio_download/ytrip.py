@@ -11,6 +11,8 @@ from tempfile import gettempdir
 from urllib.error import HTTPError
 from pytube import YouTube
 from pytube.exceptions import VideoUnavailable
+from freejay.messages import produce_consume as prodcon
+import freejay.messages.messages as mes
 
 logger = logging.getLogger(__name__)
 
@@ -81,9 +83,20 @@ Tests Needed:
 """
 
 
-class DownloadManager:
-    def __init__(self, destination: typing.Optional[str] = None):
+class DownloadManager(prodcon.Producer):
+    """
+    Download Manager.
 
+    Download audio from YouTube, removing old downloads.
+    """
+
+    def __init__(self, destination: typing.Optional[str] = None):
+        """Construct Download Manager.
+
+        Args:
+            destination (str, optional): Download directory. If None (the default),
+            then a temporary directory is used.
+        """
         if not destination:
             destination = gettempdir()
 
@@ -93,17 +106,46 @@ class DownloadManager:
         self.__lock = threading.Lock()
 
     def download(self, url: str):
+        """Download a track from YouTube.
+
+        Args:
+            url (str): YouTube URL.
+        """
         t = threading.Thread(target=self.__download_helper, args=(url,))
         t.start()
 
     def __download_helper(self, url: str):
-
         with self.__lock:
             file_path = yt_rip(video_link=url, destination=self.destination)
             self.current = file_path
+            # Remove old tracks
             self.__cleanup(file_path)
 
-    def __cleanup(self, file_path):
+            # Send message with file path of downloaded file.
+            self.send_message(
+                mes.Message(
+                    sender=mes.Sender(
+                        source=mes.Source.DOWNLOAD_MODEL,
+                        trigger=mes.Trigger.DATA_OUTPUT,
+                    ),
+                    content=mes.Data(
+                        component=mes.Component.DOWNLOAD,
+                        element=mes.Element.DOWNLOAD,
+                        data={"file_path": self.current},
+                    ),
+                )
+            )
+
+    def __cleanup(self, file_path: str):
+        """Cleanup old files.
+
+        Tries to add the latest file to the downloads queue. If the queue
+        is full, pop items from the queue and delete corresponding file
+        until file can be added.
+
+        Args:
+            file_path (str): File path of downloaded track.
+        """
         try:
             self.downloads.put(file_path, block=False)
         except queue.Full:

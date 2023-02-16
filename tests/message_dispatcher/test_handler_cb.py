@@ -1,6 +1,6 @@
 import pytest
 from unittest import mock
-from freejay.message_dispatcher import handler_cb
+from freejay.controller_cb import factories
 from freejay.messages import messages as mes
 
 
@@ -8,7 +8,7 @@ from freejay.messages import messages as mes
 @pytest.fixture
 def message_f():
     msg = mes.Message(
-        sender=mes.Sender(source=mes.Source.PLAYER_UI, trigger=mes.Trigger.KEY),
+        sender=mes.Sender(source=mes.Source.PLAYER_VIEW, trigger=mes.Trigger.KEY),
         content=mes.Key(press_release=mes.PressRelease.PRESS, sym="q"),
         type=mes.Type.KEY,
     )
@@ -16,22 +16,22 @@ def message_f():
 
 
 def test_make_button_cb_returns_callable():
-    test_cb = handler_cb.make_button_cb(mock.Mock(), mock.Mock())
+    test_cb = factories.make_button_cb(mock.Mock(), mock.Mock())
     assert callable(test_cb)
 
 
 def test_make_data_cb_returns_callable():
-    test_cb = handler_cb.make_data_cb(mock.Mock())
+    test_cb = factories.make_data_cb(mock.Mock())
     assert callable(test_cb)
 
 
 def test_make_button_cb_cb_calls_correct():
     mocker1 = mock.Mock()
     mocker2 = mock.Mock()
-    test_cb = handler_cb.make_button_cb(mocker1, mocker2)
+    test_cb = factories.make_button_cb(mocker1, mocker2)
 
     msg = mes.Message(
-        sender=mes.Sender(source=mes.Source.PLAYER_UI, trigger=mes.Trigger.BUTTON),
+        sender=mes.Sender(source=mes.Source.PLAYER_VIEW, trigger=mes.Trigger.BUTTON),
         content=mes.Button(
             press_release=mes.PressRelease.PRESS,
             component=mes.Component.LEFT_DECK,
@@ -54,10 +54,10 @@ def test_make_button_cb_cb_calls_correct():
 
 def test_make_button_cb_cb_no_release():
     mocker = mock.Mock()
-    test_cb = handler_cb.make_button_cb(mocker)
+    test_cb = factories.make_button_cb(mocker)
 
     msg = mes.Message(
-        sender=mes.Sender(source=mes.Source.PLAYER_UI, trigger=mes.Trigger.BUTTON),
+        sender=mes.Sender(source=mes.Source.PLAYER_VIEW, trigger=mes.Trigger.BUTTON),
         content=mes.Button(
             press_release=mes.PressRelease.PRESS,
             component=mes.Component.LEFT_DECK,
@@ -78,10 +78,10 @@ def test_make_button_cb_cb_no_release():
 def test_make_button_cb_cb_calls_correct_no_data():
     mocker1 = mock.Mock()
     mocker2 = mock.Mock()
-    test_cb = handler_cb.make_button_cb(mocker1, mocker2)
+    test_cb = factories.make_button_cb(mocker1, mocker2)
 
     msg = mes.Message(
-        sender=mes.Sender(source=mes.Source.PLAYER_UI, trigger=mes.Trigger.BUTTON),
+        sender=mes.Sender(source=mes.Source.PLAYER_VIEW, trigger=mes.Trigger.BUTTON),
         content=mes.Button(
             press_release=mes.PressRelease.PRESS,
             component=mes.Component.LEFT_DECK,

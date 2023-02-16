@@ -1,68 +1,94 @@
+"""Tkinter components for youtube downloader."""
+
 import typing
-import os
-import time
 import tkinter as tk
 import customtkinter as ctk
 from freejay.messages import messages as mes
 from .tk_components import TkComponent, TkRoot
-from freejay.audio_download import ytrip
+import pathlib
 
 
 class TkDownload(TkComponent):
+    """
+    Download View.
+
+    Has a search bar, download button and label to show the
+    name of the most recently downloaded track.
+    """
+
     def __init__(
         self,
         tkroot: TkRoot,
         parent: typing.Any,
+        source: mes.Source,
+        component: mes.Component,
     ):
+        """Construct TkDownload.
 
-        super().__init__(tkroot=tkroot, parent=parent, source=mes.Source.DOWNLOAD)
-        self.component = mes.Component.DOWNLOAD
+        Args:
+            tkroot (TkRoot): Top-level Tk widget.
+            parent: Parent Tk widget.
+            source (mes.Source): Message source.
+            component (mes.Component): Message Component.
+        """
+        super().__init__(tkroot=tkroot, parent=parent, source=source)
+        self.component = component
+
+        # Configure Tk frame
         self.frame = ctk.CTkFrame(parent)
-        self.frame.grid_rowconfigure(0, weight=1)
+        self.frame.grid_rowconfigure((0, 1), weight=1)
         self.frame.grid_columnconfigure((0, 1, 2, 3, 4), weight=1)
+        self.frame.grid(padx=15, pady=15)
 
+        # Create attributes to store file info
+        self.__file_path = ""
+        self.__file_name = ""
+
+        # Tk elements
+        # Store the file name label
+        self.label_var = ctk.StringVar(master=self.frame, value="")
+
+        # Text entry for YouTube URL
         self.download_entry = ctk.CTkEntry(
             master=self.frame, placeholder_text="Enter URL"
         )
 
+        # Download Button
         self.download_btn = ctk.CTkButton(
             master=self.frame, text="download", command=self.download_cb
         )
 
-        self.download_entry.grid(row=0, column=0, columnspan=4, sticky=(tk.E, tk.W))
-        self.download_btn.grid(row=0, column=4, sticky=(tk.E, tk.W))
+        # Display file name
+        self.file_name_lbl = ctk.CTkLabel(
+            master=self.frame, textvariable=self.label_var
+        )
+
+        # Arrange Tk elements
+        self.download_entry.grid(
+            row=0, column=0, columnspan=4, padx=5, pady=5, sticky=(tk.E, tk.W)
+        )
+        self.download_btn.grid(row=0, column=4, padx=5, pady=5, sticky=(tk.E, tk.W))
+        self.file_name_lbl.grid(
+            row=1, column=0, columnspan=5, padx=5, pady=5, sticky=(tk.E, tk.W)
+        )
+
+    @property
+    def file_path(self):
+        """Get the file path of last downloaded file."""
+        return self.__file_path
+
+    @file_path.setter
+    def file_path(self, value):
+        """Set the file path of last downloaded file."""
+        self.__file_path = value
+        self.__file_name = pathlib.Path(value).stem
+        self.label_var.set(self.__file_name)
 
     def download_cb(self):
+        """Call on download button press."""
         self.button_send(
             component=self.component,
             element=mes.Element.DOWNLOAD,
             press_release=mes.PressRelease.PRESS,
             data={"url": self.download_entry.get()},
         )
-
-
-if __name__ == "__main__":
-
-    from ..messages.produce_consume import Consumer
-    from ..message_dispatcher.handler import Handler
-    from ..audio_download.download_cb import register_download_cb
-    from ..audio_download.ytrip import DownloadManager
-
-    handler = Handler()
-    download_manager = DownloadManager("instance")
-
-    register_download_cb(handler, download_manager)
-
-    class Listener(Consumer):
-        def on_message_recieved(self, message):
-            handler(message)
-
-    tkroot = TkRoot()
-    tkroot.grid_columnconfigure(0, weight=1)
-    tkdownload = TkDownload(tkroot=tkroot, parent=tkroot)
-
-    tkdownload.frame.grid(row=0, column=0, padx=30, pady=30, sticky=(tk.E, tk.W))
-
-    listen = Listener()
-    listen.listen(tkroot)
-    tkroot.mainloop()

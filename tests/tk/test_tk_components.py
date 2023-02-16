@@ -6,7 +6,7 @@ from unittest.mock import Mock
 def test_tk_component_send():
 
     msg = mes.Message(
-        sender=mes.Sender(source=mes.Source.PLAYER_UI, trigger=mes.Trigger.BUTTON),
+        sender=mes.Sender(source=mes.Source.PLAYER_VIEW, trigger=mes.Trigger.BUTTON),
         content=mes.Button(
             mes.PressRelease.PRESS,
             component=mes.Component.LEFT_DECK,
@@ -16,7 +16,7 @@ def test_tk_component_send():
 
     root_mock = Mock()
     component_t = tk_components.TkComponent(
-        tkroot=root_mock, parent=root_mock, source=mes.Source.PLAYER_UI
+        tkroot=root_mock, parent=root_mock, source=mes.Source.PLAYER_VIEW
     )
     component_t.send_message(msg)
 
@@ -26,7 +26,7 @@ def test_tk_component_send():
 def test_tk_component_button():
 
     expected = mes.Message(
-        sender=mes.Sender(source=mes.Source.PLAYER_UI, trigger=mes.Trigger.BUTTON),
+        sender=mes.Sender(source=mes.Source.PLAYER_VIEW, trigger=mes.Trigger.BUTTON),
         content=mes.Button(
             mes.PressRelease.PRESS,
             component=mes.Component.LEFT_DECK,
@@ -36,7 +36,7 @@ def test_tk_component_button():
 
     root_mock = Mock()
     component_t = tk_components.TkComponent(
-        tkroot=root_mock, parent=root_mock, source=mes.Source.PLAYER_UI
+        tkroot=root_mock, parent=root_mock, source=mes.Source.PLAYER_VIEW
     )
     component_t.button_send(
         component=mes.Component.LEFT_DECK,

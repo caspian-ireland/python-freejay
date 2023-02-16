@@ -1,71 +1,66 @@
 """Messages to support communication between application components."""
 
 
-# TODO- Not sure about the message 'sender' class.
-# Should probably be replaced with a some sort of
-# 'recipient' class as its really identifying where
-# the message needs to end up (or at least the intended)
-# action.
-
 import typing
 import time
 import dataclasses
-from enum import Enum
+from enum import Enum, auto
 
 
 class PressRelease(Enum):
     """Enum for press or release (e.g. button or key action)."""
 
-    PRESS = 1
-    RELEASE = 0
+    PRESS = auto()
+    RELEASE = auto()
 
 
 class Component(Enum):
     """Enum for components."""
 
-    MIXER = 0
-    LEFT_DECK = 1
-    RIGHT_DECK = 2
-    DOWNLOAD = 3
+    MIXER = auto()
+    LEFT_DECK = auto()
+    RIGHT_DECK = auto()
+    DOWNLOAD = auto()
 
 
 class Element(Enum):
     """Enum for elements (part of a component)."""
 
-    CUE = 0
-    PLAY_PAUSE = 1
-    NUDGE = 2
-    STOP = 3
-    JOG = 4
-    DOWNLOAD = 5
+    CUE = auto()
+    PLAY_PAUSE = auto()
+    NUDGE = auto()
+    STOP = auto()
+    JOG = auto()
+    LOAD = auto()
+    DOWNLOAD = auto()
 
 
 class Source(Enum):
     """Enum for message sources."""
 
-    MAIN_WINDOW = 0
-    PLAYER_UI = 1
-    PLAYER_SERVER = 2
-    DOWNLOAD_UI = 3
-    DOWNLOAD_SERVER = 3
-    KEY_MAPPER = 4
+    MAIN_WINDOW = auto()
+    PLAYER_VIEW = auto()
+    PLAYER_MODEL = auto()
+    DOWNLOAD_VIEW = auto()
+    DOWNLOAD_MODEL = auto()
+    KEY_MAPPER = auto()
 
 
 class Trigger(Enum):
     """Enum for message trigger events."""
 
-    BUTTON = 0
-    KEY = 1
-    DATA_INPUT = 2
-    DATA_OUTPUT = 3
+    BUTTON = auto()
+    KEY = auto()
+    DATA_INPUT = auto()
+    DATA_OUTPUT = auto()
 
 
 class Type(Enum):
     """Enum for message types."""
 
-    BUTTON = 0
-    KEY = 1
-    DATA = 2
+    BUTTON = auto()
+    KEY = auto()
+    DATA = auto()
 
 
 class Content:

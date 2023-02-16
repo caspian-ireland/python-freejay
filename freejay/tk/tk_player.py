@@ -155,6 +155,47 @@ class TkDeckPitchControls(TkComponent):
         )
 
 
+class TkDeckFileControls(TkComponent):
+    """
+    Deck file controls frame.
+
+    Currently a simple 'load' button to load the most recently downloaded track.
+    """
+
+    def __init__(
+        self,
+        tkroot: TkRoot,
+        parent: typing.Any,
+        source: mes.Source,
+        component: mes.Component,
+    ):
+        """Construct TkDeckFileControls.
+
+        Note: this is intended to be created by TkDeck.
+
+        Args:
+            tkroot (TkRoot): Top-level Tk widget.
+            parent: Parent Tk widget.
+            source (mes.Source): Message source.
+            component (mes.Component): Message Component (LEFT_DECK or RIGHT_DECK)
+        """
+        super().__init__(tkroot=tkroot, parent=parent, source=source)
+        self.component = component
+        self.frame = ctk.CTkFrame(parent)
+        self.frame.grid_rowconfigure((0, 1), weight=1)
+        self.frame.grid_columnconfigure((0, 1), weight=1)
+        self.frame.grid(padx=10, pady=10)
+
+        self.load_btn = self.make_button(
+            parent=self.frame,
+            row=0,
+            column=1,
+            component=self.component,
+            element=mes.Element.LOAD,
+            image_path=os.path.join("assets", "icons", "icons8-insert-96.png"),
+        )
+
+
 class TkDeck(TkComponent):
     """Deck (player) frame."""
 
@@ -178,13 +219,17 @@ class TkDeck(TkComponent):
         self.frame = ctk.CTkFrame(parent)
         self.frame.grid_rowconfigure((0, 1), weight=1)
         self.frame.grid_columnconfigure((0, 1), weight=1)
-        self.frame.grid(padx=30, pady=30)
+        self.frame.grid(padx=15, pady=15)
         self.play_controls = TkDeckPlayControls(
             tkroot=tkroot, parent=self.frame, source=source, component=component
         )
         self.pitch_controls = TkDeckPitchControls(
             tkroot=tkroot, parent=self.frame, source=source, component=component
         )
+        self.file_controls = TkDeckFileControls(
+            tkroot=tkroot, parent=self.frame, source=source, component=component
+        )
 
         self.play_controls.frame.grid(row=1, column=0, columnspan=2, sticky="W")
         self.pitch_controls.frame.grid(row=0, column=0, sticky="W")
+        self.file_controls.frame.grid(row=0, column=1, sticky="ew")

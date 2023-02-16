@@ -33,7 +33,7 @@ def make_button_cb(
 
         The press_release attribute is accessed from an incoming message
         and a press callback or release callback is called. See
-        handler_cb.make_button_cb() for more details.
+        factories.make_button_cb() for more details.
 
         Args:
             message (mes.Message[mes.Button]): Message with Button content.
