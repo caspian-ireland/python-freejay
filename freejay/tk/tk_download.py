@@ -82,7 +82,7 @@ class TkDownload(TkComponent):
         """Set the file path of last downloaded file."""
         self.__file_path = value
         self.__file_name = pathlib.Path(value).stem
-        self.label_var.set(self.__file_name)
+        self.label_var.set(f"Track ready: {self.__file_name}")
 
     def download_cb(self):
         """Call on download button press."""
@@ -92,3 +92,5 @@ class TkDownload(TkComponent):
             press_release=mes.PressRelease.PRESS,
             data={"url": self.download_entry.get()},
         )
+
+        self.label_var.set("Downloading...")

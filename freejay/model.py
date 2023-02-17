@@ -6,6 +6,7 @@ import typing
 from freejay.player.djplayer import DJPlayer
 from freejay.player.player import PlayerMpv
 from freejay.audio_download.ytrip import DownloadManager
+from freejay.messages import messages as mes
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +26,11 @@ class Model:
         """
         self.left_deck = DJPlayer(player=PlayerMpv(mpv.MPV()))
         self.right_deck = DJPlayer(player=PlayerMpv(mpv.MPV()))
-        self.download = DownloadManager(destination=dir)
+        self.download = DownloadManager(
+            destination=dir,
+            source=mes.Source.DOWNLOAD_MODEL,
+            component=mes.Component.DOWNLOAD,
+        )
 
 
 def make_model() -> Model:
