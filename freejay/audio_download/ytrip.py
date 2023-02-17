@@ -169,7 +169,19 @@ class DownloadManager(prodcon.Producer):
                 pass
             self.__cleanup(file_path)
 
-    def make_message(self, trigger: mes.Trigger, element: mes.Element, data: dict):
+    def make_message(
+        self, trigger: mes.Trigger, element: mes.Element, data: dict
+    ) -> mes.Message:
+        """Construct a message.
+
+        Args:
+            trigger (Trigger): Message trigger.
+            element (Element): Message element.
+            data (dict): Data
+
+        Returns:
+            Message: Message
+        """
         msg = mes.Message(
             sender=mes.Sender(
                 source=self.source,
