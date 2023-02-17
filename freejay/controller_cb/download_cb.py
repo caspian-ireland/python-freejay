@@ -65,8 +65,14 @@ def make_download_view_callback(
     """
 
     def callback(message: mes.Message[mes.Data]):
-        file_path = message.content.data["file_path"]
-        download_view.file_path = file_path
+        if message.content.data["status"] == "success":
+            file_path = message.content.data["file_path"]
+            download_view.file_path = file_path
+        elif message.content.data["status"] == "failed":
+            # exception = message.content.data["exception"]
+            download_view.label_var.set(
+                "An error occurred. Please check the URL and try again."
+            )
 
     return callback
 

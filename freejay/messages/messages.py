@@ -53,6 +53,7 @@ class Trigger(Enum):
     KEY = auto()
     DATA_INPUT = auto()
     DATA_OUTPUT = auto()
+    EXCEPTION = auto()
 
 
 class Type(Enum):

@@ -10,7 +10,7 @@ import threading
 from tempfile import gettempdir
 from urllib.error import HTTPError
 from pytube import YouTube
-from pytube.exceptions import VideoUnavailable
+from pytube.exceptions import VideoUnavailable, RegexMatchError
 from freejay.messages import produce_consume as prodcon
 import freejay.messages.messages as mes
 
@@ -70,17 +70,13 @@ def yt_rip(video_link: str, destination: str | None = None) -> str:
             "Video unavailable, check the link for '%s'", video_link, exc_info=True
         )
         raise
-
-
-"""
-Tests Needed:
-
- - Invalid URL
- - Destination doesn't exist
- - Tempdir not possible
- - File no longer available (e.g. when deleting).
-
-"""
+    except RegexMatchError:
+        logger.error(
+            "Not recognised as a valid link: '%s'",
+            video_link,
+            exc_info=True,
+        )
+        raise
 
 
 class DownloadManager(prodcon.Producer):
@@ -90,7 +86,12 @@ class DownloadManager(prodcon.Producer):
     Download audio from YouTube, removing old downloads.
     """
 
-    def __init__(self, destination: typing.Optional[str] = None):
+    def __init__(
+        self,
+        source: mes.Source,
+        component: mes.Component,
+        destination: typing.Optional[str] = None,
+    ):
         """Construct Download Manager.
 
         Args:
@@ -100,7 +101,13 @@ class DownloadManager(prodcon.Producer):
         if not destination:
             destination = gettempdir()
 
+        if not os.path.exists(destination):
+            logger.error("Directory does not exist.")
+            raise FileNotFoundError("Directory does not exist.")
+
         self.destination = destination
+        self.source = source
+        self.component = component
         self.downloads: queue.Queue[str] = queue.Queue(3)
         self.current: typing.Optional[str] = None
         self.__lock = threading.Lock()
@@ -116,25 +123,31 @@ class DownloadManager(prodcon.Producer):
 
     def __download_helper(self, url: str):
         with self.__lock:
-            file_path = yt_rip(video_link=url, destination=self.destination)
-            self.current = file_path
-            # Remove old tracks
-            self.__cleanup(file_path)
 
-            # Send message with file path of downloaded file.
-            self.send_message(
-                mes.Message(
-                    sender=mes.Sender(
-                        source=mes.Source.DOWNLOAD_MODEL,
+            try:
+                file_path = yt_rip(video_link=url, destination=self.destination)
+                self.current = file_path
+                # Remove old tracks
+                self.__cleanup(file_path)
+
+                # Send message with file path of downloaded file.
+                self.send_message(
+                    self.make_message(
                         trigger=mes.Trigger.DATA_OUTPUT,
-                    ),
-                    content=mes.Data(
-                        component=mes.Component.DOWNLOAD,
                         element=mes.Element.DOWNLOAD,
-                        data={"file_path": self.current},
-                    ),
+                        data={"status": "success", "file_path": self.current},
+                    )
                 )
-            )
+
+            except (HTTPError, VideoUnavailable, RegexMatchError) as exc:
+                # Send message with file path of downloaded file.
+                self.send_message(
+                    self.make_message(
+                        trigger=mes.Trigger.EXCEPTION,
+                        element=mes.Element.DOWNLOAD,
+                        data={"status": "failed", "exception": exc},
+                    )
+                )
 
     def __cleanup(self, file_path: str):
         """Cleanup old files.
@@ -150,5 +163,22 @@ class DownloadManager(prodcon.Producer):
             self.downloads.put(file_path, block=False)
         except queue.Full:
             old_file = self.downloads.get()
-            os.remove(old_file)
+            try:
+                os.remove(old_file)
+            except FileNotFoundError:
+                pass
             self.__cleanup(file_path)
+
+    def make_message(self, trigger: mes.Trigger, element: mes.Element, data: dict):
+        msg = mes.Message(
+            sender=mes.Sender(
+                source=self.source,
+                trigger=trigger,
+            ),
+            content=mes.Data(
+                component=self.component,
+                element=element,
+                data=data,
+            ),
+        )
+        return msg
