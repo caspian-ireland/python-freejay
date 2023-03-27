@@ -33,6 +33,7 @@ class Element(Enum):
     JOG = auto()
     LOAD = auto()
     DOWNLOAD = auto()
+    CROSSFADER = auto()
 
 
 class Source(Enum):
@@ -44,6 +45,7 @@ class Source(Enum):
     DOWNLOAD_VIEW = auto()
     DOWNLOAD_MODEL = auto()
     KEY_MAPPER = auto()
+    MIXER = auto()
 
 
 class Trigger(Enum):
@@ -51,6 +53,7 @@ class Trigger(Enum):
 
     BUTTON = auto()
     KEY = auto()
+    SLIDER = auto()
     DATA_INPUT = auto()
     DATA_OUTPUT = auto()
     EXCEPTION = auto()
