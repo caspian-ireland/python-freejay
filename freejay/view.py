@@ -4,6 +4,7 @@ import customtkinter as ctk
 from freejay.tk import tk_components
 from freejay.tk import tk_player
 from freejay.tk import tk_download
+from freejay.tk import tk_mixer
 from freejay.messages import messages as mes
 
 
@@ -34,6 +35,13 @@ class View:
             component=mes.Component.RIGHT_DECK,
         )
 
+        self.mixer = tk_mixer.TkCrossfader(
+            tkroot=self.tkroot,
+            parent=self.tkmain.frame,
+            source=mes.Source.MIXER,
+            component=mes.Component.MIXER,
+        )
+
         self.download = tk_download.TkDownload(
             tkroot=self.tkroot,
             parent=self.tkmain.frame,
@@ -61,10 +69,11 @@ def make_view() -> View:
     view.tkroot.grid_rowconfigure(0, weight=1)
     view.tkroot.grid_columnconfigure(0, weight=1)
     view.tkmain.frame.grid(row=0, column=0)
-    view.tkmain.frame.grid_rowconfigure((0, 1), weight=1)
+    view.tkmain.frame.grid_rowconfigure((0, 1, 2), weight=1)
     view.tkmain.frame.grid_columnconfigure((0, 1), weight=1)
     view.download.frame.grid(row=0, column=0, columnspan=2, sticky="ew")
     view.left_deck.frame.grid(row=1, column=0, sticky="w")
     view.right_deck.frame.grid(row=1, column=1, sticky="e")
+    view.mixer.frame.grid(row=2, column=0, columnspan=2)
 
     return view

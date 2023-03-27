@@ -7,6 +7,7 @@ from freejay.player.djplayer import DJPlayer
 from freejay.player.player import PlayerMpv
 from freejay.audio_download.ytrip import DownloadManager
 from freejay.messages import messages as mes
+from freejay.player.mixer import Mixer
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +27,7 @@ class Model:
         """
         self.left_deck = DJPlayer(player=PlayerMpv(mpv.MPV()))
         self.right_deck = DJPlayer(player=PlayerMpv(mpv.MPV()))
+        self.mixer = Mixer(left_deck=self.left_deck, right_deck=self.right_deck)
         self.download = DownloadManager(
             destination=dir,
             source=mes.Source.DOWNLOAD_MODEL,

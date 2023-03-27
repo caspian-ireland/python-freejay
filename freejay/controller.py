@@ -9,6 +9,7 @@ from freejay.message_dispatcher.handler import Handler
 from freejay.keyboard.keymapper import KeyMapper, keybindings
 from freejay.controller_cb import player_cb
 from freejay.controller_cb import download_cb
+from freejay.controller_cb import mixer_cb
 from .view import View
 from .model import Model
 
@@ -35,6 +36,8 @@ def register_model_callbacks(handler: Handler, model: Model):
         download_manager=model.download,
         component=mes.Component.RIGHT_DECK,
     )
+    mixer_cb.register_mixer_cb(handler=handler, mixer=model.mixer)
+
     download_cb.register_download_model_cb(
         handler=handler, download_manager=model.download
     )
