@@ -2,6 +2,7 @@
 
 import typing
 import os
+import tkinter as tk
 import customtkinter as ctk
 from freejay.messages import messages as mes
 from .tk_components import TkComponent, TkRoot
@@ -128,7 +129,7 @@ class TkDeckPitchControls(TkComponent):
         super().__init__(tkroot=tkroot, parent=parent, source=source)
         self.component = component
         self.frame = ctk.CTkFrame(parent)
-        self.frame.grid_rowconfigure(0, weight=1)
+        self.frame.grid_rowconfigure((0, 1), weight=1)
         self.frame.grid_columnconfigure((0, 1), weight=1)
         self.frame.grid(padx=30, pady=15)
 
@@ -152,6 +153,20 @@ class TkDeckPitchControls(TkComponent):
             element=mes.Element.NUDGE,
             data_press={"value": 0.05},
             image_path=os.path.join("assets", "icons", "icons8-resume-button-96.png"),
+        )
+
+        self.speed_entry = self.make_entry(
+            parent=self.frame,
+            component=self.component,
+            element=mes.Element.SPEED,
+            data_callback=lambda x: {"value": float(x)},
+            drop_focus=True,
+            placeholder_text="Pitch %",
+        )
+
+        # Arrange Tk elements
+        self.speed_entry.grid(
+            row=1, column=0, columnspan=2, padx=5, pady=5, sticky=(tk.E, tk.W)
         )
 
 

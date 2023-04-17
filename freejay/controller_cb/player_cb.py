@@ -7,11 +7,15 @@ changing the state of the audio player as required.
 """
 
 import typing
+import logging
 from freejay.player import djplayer
 from freejay.controller_cb import factories
 from freejay.message_dispatcher import handler
 from freejay.messages import messages as mes
 from freejay.audio_download.ytrip import DownloadManager
+
+
+logger = logging.getLogger(__name__)
 
 
 def make_cue_callback(
@@ -107,7 +111,6 @@ def make_load_callback(
     """
 
     def callback(message: mes.Message[mes.Button]) -> None:
-
         file_path = download_manager.current
         if (
             file_path
@@ -115,6 +118,27 @@ def make_load_callback(
             and message.content.press_release == mes.PressRelease.PRESS
         ):
             player.load(filename=file_path)
+
+    return callback
+
+
+def make_speed_callback(
+    player: djplayer.DJPlayer,
+) -> typing.Callable[[mes.Message[mes.Data]], None]:
+    """Make speed callback.
+
+    Args:
+        player (djplayer.DJPlayer): player
+
+    Returns:
+        typing.Callable[[mes.Message[mes.Data]], None]: Callback function
+    """
+
+    def callback(message: mes.Message[mes.Data]) -> None:
+        speed = message.content.data["value"]  # Get speed value
+        speed = 1 + speed / 100  # Convert to decimal
+        logger.debug("Setting speed to %f", speed)
+        player.speed = speed  # Set player speed
 
     return callback
 
@@ -164,4 +188,10 @@ def register_player_cb(
         callback=make_load_callback(player, download_manager),
         component=component,
         element=mes.Element.LOAD,
+    )
+
+    handler.register_handler(
+        callback=make_speed_callback(player),
+        component=component,
+        element=mes.Element.SPEED,
     )

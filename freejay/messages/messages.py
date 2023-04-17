@@ -34,6 +34,7 @@ class Element(Enum):
     LOAD = auto()
     DOWNLOAD = auto()
     CROSSFADER = auto()
+    SPEED = auto()
 
 
 class Source(Enum):
