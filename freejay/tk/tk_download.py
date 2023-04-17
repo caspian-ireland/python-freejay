@@ -48,9 +48,15 @@ class TkDownload(TkComponent):
         # Store the file name label
         self.label_var = ctk.StringVar(master=self.frame, value="")
 
-        # Text entry for YouTube URL
-        self.download_entry = ctk.CTkEntry(
-            master=self.frame, placeholder_text="Enter URL"
+        # Make download entry widget
+        self.download_entry = self.make_entry(
+            parent=self.frame,
+            component=self.component,
+            element=mes.Element.DOWNLOAD,
+            data_callback=lambda value: {"url": value},
+            drop_focus=True,
+            placeholder_text="Enter URL",
+            callback=lambda: self.label_var.set("Downloading..."),
         )
 
         # Download Button
@@ -85,12 +91,11 @@ class TkDownload(TkComponent):
         self.label_var.set(f"Track ready: {self.__file_name}")
 
     def download_cb(self):
-        """Call on download button press."""
-        self.button_send(
+        """Download callback."""
+        self.entry_send(
             component=self.component,
             element=mes.Element.DOWNLOAD,
-            press_release=mes.PressRelease.PRESS,
             data={"url": self.download_entry.get()},
         )
-
+        self.tkroot.focus_set()
         self.label_var.set("Downloading...")
