@@ -12,7 +12,6 @@ file.
 import typing
 import logging
 from freejay.audio_download import ytrip
-from freejay.controller_cb import factories
 from freejay.message_dispatcher import handler
 from freejay.messages import messages as mes
 from freejay.tk import tk_download
@@ -32,7 +31,12 @@ def make_download_model_callback(
     Returns:
         typing.Callable[[mes.Message[mes.Button]], None]: Callback function.
     """
-    callback = factories.make_button_cb(press_cb=download_manager.download)
+
+    def callback(msg: mes.Message[mes.Button]):
+        url = msg.content.data.get("url")
+        if isinstance(url, str):
+            download_manager.download(url=url)
+
     return callback
 
 
